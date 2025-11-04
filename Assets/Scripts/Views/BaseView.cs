@@ -8,6 +8,11 @@ namespace Views
         [SerializeField] private EFractionName _fraction;
         [SerializeField] private MeshRenderer _meshRenderer;
 
+        public void AddResource(int value)
+        {
+            
+        }
+        
         private void Start()
         {
             switch (_fraction)
