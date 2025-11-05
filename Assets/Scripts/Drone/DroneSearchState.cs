@@ -1,44 +1,52 @@
 ﻿using System.Linq;
-using Modules;
-using UnityEngine;
-using Views;
 
 namespace Drone
 {
     public class DroneSearchState : IDroneState
     {
-        public void EnterState(DroneView drone)
+        public void EnterState(IDroneController droneController)
         {
-            var resources = GameObject.FindGameObjectsWithTag("Resource");
-            if (resources.Length == 0)
+            if (droneController.FreeResourcesList.Count == 0)
             {
-                // Нет ресурсов — ждать
-                drone.ChangeState(new DroneIdleState());
+                droneController.ChangeState(new DroneIdleState());
                 return;
             }
 
-            drone.targetResource = resources
-                .OrderBy(r => Vector3.Distance(drone.transform.position, r.transform.position))
-                .First();
+            var closestResource = droneController.FreeResourcesList[0];
+            var closesDistance = (droneController.CurrentDronePosition - droneController.FreeResourcesList[0].transform.position).sqrMagnitude;
+            
+            foreach (var resourceView in droneController.FreeResourcesList)
+            {
+                var checkDist = (droneController.CurrentDronePosition - resourceView.transform.position).sqrMagnitude;
+                
+                if (checkDist > closesDistance)
+                    continue;
 
-            drone.agent.SetDestination(drone.targetResource.transform.position);
+                closesDistance = checkDist;
+                closestResource = resourceView;
+            }
+            
+            droneController.SetTarget(closestResource);
+            droneController.SetDestination(closestResource.transform.position);
         }
 
-        public void UpdateState(DroneView drone)
+        public void UpdateState(IDroneController droneController)
         {
-            if (!drone.targetResource) 
+            if (!droneController.FreeResourcesList.Contains(droneController.TargetResource)) 
             {
-                drone.ChangeState(new DroneSearchState());
+                droneController.ChangeState(new DroneIdleState());
                 return;
             }
-
-            if (Vector3.Distance(drone.transform.position, drone.targetResource.transform.position) < drone.collectDistance)
+            
+            var sqrDistance = (droneController.CurrentDronePosition - droneController.TargetResource.transform.position).sqrMagnitude;
+            
+            if (sqrDistance < droneController.ResourceCollectDistance * droneController.ResourceCollectDistance)
             {
-                drone.ChangeState(new DroneCollectState());
+                droneController.ChangeState(new DroneCollectState());
             }
         }
 
-        public void ExitState(DroneView drone)
+        public void ExitState(IDroneController droneController)
         {
         }
     }

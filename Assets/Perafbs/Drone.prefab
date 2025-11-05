@@ -154,10 +154,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ee0068dfe8b4ea394be8bcb35fae455, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  homeBase: {fileID: 0}
-  agent: {fileID: 4235219576051391553}
-  targetResource: {fileID: 0}
-  collectDistance: 2
+  <ResourceCollectDistance>k__BackingField: 2
+  <BaseDestinationDistance>k__BackingField: 10
+  <Agent>k__BackingField: {fileID: 4235219576051391553}
 --- !u!195 &4235219576051391553
 NavMeshAgent:
   m_ObjectHideFlags: 0

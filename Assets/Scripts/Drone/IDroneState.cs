@@ -1,12 +1,9 @@
-﻿using Modules;
-using Views;
-
-namespace Drone
+﻿namespace Drone
 {
     public interface IDroneState
     {
-        void EnterState(DroneView drone);
-        void UpdateState(DroneView drone);
-        void ExitState(DroneView drone);
+        void EnterState(IDroneController droneController);
+        void UpdateState(IDroneController droneController);
+        void ExitState(IDroneController droneController);
     }
 }

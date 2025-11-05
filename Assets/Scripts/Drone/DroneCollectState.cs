@@ -1,31 +1,42 @@
-﻿using Modules;
-using UnityEngine;
-using Views;
+﻿using System;
+using System.Linq;
+using Cysharp.Threading.Tasks;
 
 namespace Drone
 {
     public class DroneCollectState : IDroneState
     {
-        public void EnterState(DroneView drone)
+        public void EnterState(IDroneController droneController)
         {
-            if (drone.targetResource)
+            if (droneController.FreeResourcesList.Contains(droneController.TargetResource))
             {
-                Object.Destroy(drone.targetResource);
-                drone.targetResource = null;
+                droneController.StartHarvestResource();
+                
+                ResourceHarvesting(droneController).Forget();
             }
-
-            drone.agent.SetDestination(drone.homeBase.transform.position);
-        }
-
-        public void UpdateState(DroneView drone)
-        {
-            if (Vector3.Distance(drone.transform.position, drone.homeBase.transform.position) < drone.collectDistance * 5)
+            else
             {
-                drone.ChangeState(new DroneReturnState());
+                droneController.ChangeState(new DroneSearchState());
             }
         }
 
-        public void ExitState(DroneView drone)
+        private async UniTaskVoid ResourceHarvesting(IDroneController droneController)
+        {
+            await UniTask.Delay(TimeSpan.FromSeconds(2));
+            
+            droneController.SetDestination(droneController.BasePosition);
+        }
+
+        public void UpdateState(IDroneController droneController)
+        {
+            var sqrDistanceToBase = (droneController.CurrentDronePosition - droneController.BasePosition).sqrMagnitude;
+            if (sqrDistanceToBase < droneController.BaseDestinationDistance * droneController.BaseDestinationDistance)
+            {
+                droneController.ChangeState(new DroneReturnState());
+            }
+        }
+
+        public void ExitState(IDroneController droneController)
         {
         }
     }

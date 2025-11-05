@@ -16,19 +16,19 @@ public class Bootstrap : MonoBehaviour
         [SerializeField] private BaseView _blueBase;
 
         private IModulesHandler _modulesHandler;
-        private ISpawnResourcesModule _spawnResourcesModule;
+        private IResourcesModule _resourcesModule;
         
         private void Awake()
         {
                 var modulesList = new List<IModule>();
                 
-                var spawnResourceModule = new SpawnResourcesModule(_resourcePrefab, _resourcesSpawnArea);
-                _spawnResourcesModule = spawnResourceModule;
-                _spawnResourcesModule.SetSpawnResourcesSpeed(2f);
-                _spawnResourcesModule.SpawnResourcesActivation(true);
+                var spawnResourceModule = new ResourcesModule(_resourcePrefab, _resourcesSpawnArea);
+                _resourcesModule = spawnResourceModule;
+                _resourcesModule.SetSpawnResourcesSpeed(2f);
+                _resourcesModule.SpawnResourcesActivation(true);
                 modulesList.Add(spawnResourceModule);
                 
-                var droneModule = new DroneModule(_dronePrefab, _redBase, _blueBase);
+                var droneModule = new DroneModule(_dronePrefab, _redBase, _blueBase, _resourcesModule);
                 modulesList.Add(droneModule);
                 
                 _modulesHandler = new ModulesHandler(modulesList);

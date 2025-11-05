@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 
 namespace Modules.SpawnResources
 {
-    public class SpawnResourcesModule : ISpawnResourcesModule, IStartable
+    public class ResourcesModule : IResourcesModule, IStartable
     {
         private readonly GameObject _resourceGameObject;
         private readonly ResourcesSpawnArea _resourcesSpawnArea;
@@ -18,8 +18,10 @@ namespace Modules.SpawnResources
         
         private float _spawnResourcesCooldown;
         private bool _spawnResourcesEnabled;
+
+        public Action<ResourceView> OnResourceSpawned { get; set; }
         
-        public SpawnResourcesModule(
+        public ResourcesModule(
             GameObject resourceGameObject, 
             ResourcesSpawnArea resourcesSpawnArea
         )
@@ -66,6 +68,11 @@ namespace Modules.SpawnResources
         {
             SpawnResources().Forget();
         }
+
+        public void ResourceHarvested(ResourceView resourceView)
+        {
+            _resourcePool.Release(resourceView);
+        }
         
         private async UniTaskVoid SpawnResources()
         {
@@ -77,6 +84,8 @@ namespace Modules.SpawnResources
                 spawnPosition.y = 1;
                 var resourceView = _resourcePool.Get();
                 resourceView.transform.position = spawnPosition;
+                
+                OnResourceSpawned?.Invoke(resourceView);
                 
                 await UniTask.Delay(TimeSpan.FromSeconds(_spawnResourcesCooldown));
             }

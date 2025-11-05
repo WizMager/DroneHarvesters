@@ -1,5 +1,4 @@
-﻿using System;
-using Drone;
+﻿using Drone;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,35 +6,38 @@ namespace Views
 {
     public class DroneView : MonoBehaviour
     {
-        public BaseView homeBase;
-        public NavMeshAgent agent;
-        public IDroneState currentState;
-        public GameObject targetResource;
-        public float collectDistance = 2f;
+        [field: SerializeField] public float ResourceCollectDistance { get; private set; } = 2;
+        [field: SerializeField] public float BaseDestinationDistance { get; private set; } = 10;
+        [field: SerializeField] public NavMeshAgent Agent { get; private set; }
+        
+        public bool IsActive { get; private set; }
+        public IDroneController DroneController { get; private set; }
 
-        void Start()
+        public void Initialize(IDroneController droneController)
         {
-            agent = GetComponent<NavMeshAgent>();
-            ChangeState(new DroneIdleState());
+            DroneController = droneController;
+        }
+        
+        private void Start()
+        {
+            Agent = GetComponent<NavMeshAgent>();
         }
 
-        void Update()
+        private void OnEnable()
         {
-            currentState?.UpdateState(this);
+            IsActive = true;
         }
 
-        public void ChangeState(IDroneState newState)
+        private void OnDisable()
         {
-            currentState?.ExitState(this);
-            currentState = newState;
-            currentState?.EnterState(this);
+            IsActive = false;
         }
 
         private void OnDrawGizmos()
         {
-            if (!agent || agent.path == null) return;
+            if (!Agent || Agent.path == null) return;
 
-            var corners = agent.path.corners;
+            var corners = Agent.path.corners;
             if (corners.Length < 2) return;
 
             Gizmos.color = Color.cyan;
