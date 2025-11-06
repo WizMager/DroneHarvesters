@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Core.Interfaces;
 using Cysharp.Threading.Tasks;
 using Modules.SpawnResources;
-using Modules.StoreResource;
+using Services.StoreResource;
 using Ui;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -27,7 +27,7 @@ namespace Modules.Drone
         private readonly List<DroneView> _activeRedDrones = new ();
         private readonly List<DroneView> _activeBlueDrones = new ();
         private readonly UiController _uiController;
-        private readonly IResourceStorage _resourceStorage;
+        private readonly IResourceStorageService _resourceStorageService;
         
         public IReadOnlyList<ResourceView> FreeResources => _freeResources;
         
@@ -42,7 +42,7 @@ namespace Modules.Drone
             BaseView blueBase, 
             ISpawnResourcesModule spawnResourcesModule,
             UiController uiController, 
-            IResourceStorage resourceStorage
+            IResourceStorageService resourceStorageService
         )
         {
             _dronePrefab = dronePrefab;
@@ -50,7 +50,7 @@ namespace Modules.Drone
             _blueBase = blueBase;
             _spawnResourcesModule = spawnResourcesModule;
             _uiController = uiController;
-            _resourceStorage = resourceStorage;
+            _resourceStorageService = resourceStorageService;
 
             _spawnResourcesModule.OnResourceSpawned += OnResourceSpawned;
             _redDronePool = new ObjectPool<DroneView>(CreateRedDrone, OnGetDrone, OnReleaseDrone);
@@ -224,7 +224,7 @@ namespace Modules.Drone
         
         private void OnResourceUnload(EFractionName fraction)
         {
-            _resourceStorage.AddResource(fraction);
+            _resourceStorageService.AddResource(fraction);
         }
         
         public void Start()

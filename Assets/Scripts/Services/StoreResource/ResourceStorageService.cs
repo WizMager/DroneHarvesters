@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using Utils;
 
-namespace Modules.StoreResource
+namespace Services.StoreResource
 {
-    public class ResourceStorage : IResourceStorage
+    public class ResourceStorageService : IResourceStorageService
     {
         private readonly Dictionary<EFractionName, int> _resources = new ();
         
         public Action<EFractionName, int> OnResourceChange { get; set; }
         
-        public ResourceStorage()
+        public ResourceStorageService()
         {
             _resources.Add(EFractionName.Red, 0);
             _resources.Add(EFractionName.Blue, 0);

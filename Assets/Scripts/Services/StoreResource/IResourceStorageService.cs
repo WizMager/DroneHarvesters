@@ -1,9 +1,9 @@
 ﻿using System;
 using Utils;
 
-namespace Modules.StoreResource
+namespace Services.StoreResource
 {
-    public interface IResourceStorage
+    public interface IResourceStorageService
     {
         Action<EFractionName, int> OnResourceChange { get; set; }
         

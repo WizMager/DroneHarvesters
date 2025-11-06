@@ -1,9 +1,13 @@
 ﻿using System.Collections.Generic;
 using Core;
 using Core.Interfaces;
+using Db.Camera;
+using Modules.Camera;
 using Modules.Drone;
 using Modules.SpawnResources;
-using Modules.StoreResource;
+using Services.Input;
+using Services.Input.Impl;
+using Services.StoreResource;
 using Ui;
 using UnityEngine;
 using Views;
@@ -15,8 +19,11 @@ public class Bootstrap : MonoBehaviour
         [SerializeField] private GameObject _dronePrefab;
         [SerializeField] private BaseView _redBase;
         [SerializeField] private BaseView _blueBase;
+        [SerializeField] private Camera _camera;
         
         [SerializeField] private UiController _uiController;
+        
+        [SerializeField] private CameraData _cameraData;
 
         private IModulesHandler _modulesHandler;
         private ISpawnResourcesModule _spawnResourcesModule;
@@ -25,7 +32,12 @@ public class Bootstrap : MonoBehaviour
         {
                 var modulesList = new List<IModule>();
                 
-                IResourceStorage resourceStorage = new ResourceStorage();
+                IResourceStorageService resourceStorageService = new ResourceStorageService();
+                IInputService inputService = new InputService();
+                inputService.Initialize();
+                
+                var cameraMove = new CameraMoveModule(_camera, inputService, _cameraData);
+                modulesList.Add(cameraMove);
                 
                 var spawnResourceModule = new SpawnResourcesModule(_resourcePrefab, _resourcesSpawnArea, _uiController);
                 _spawnResourcesModule = spawnResourceModule;
@@ -33,10 +45,10 @@ public class Bootstrap : MonoBehaviour
                 _spawnResourcesModule.SpawnResourcesActivation(true);
                 modulesList.Add(spawnResourceModule);
                 
-                var droneModule = new DroneModule(_dronePrefab, _redBase, _blueBase, _spawnResourcesModule, _uiController, resourceStorage);
+                var droneModule = new DroneModule(_dronePrefab, _redBase, _blueBase, _spawnResourcesModule, _uiController, resourceStorageService);
                 modulesList.Add(droneModule);
                 
-                _uiController.Initialize(resourceStorage);
+                _uiController.Initialize(resourceStorageService);
                 
                 _modulesHandler = new ModulesHandler(modulesList);
                 

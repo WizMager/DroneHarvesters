@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Globalization;
-using Modules.StoreResource;
+using Services.StoreResource;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,12 +28,12 @@ namespace Ui
         [SerializeField] private TMP_InputField _resourceSpawnTimer;
         [SerializeField] private Toggle _dronePathToggle;
 
-        private IResourceStorage _resourceStorage;
+        private IResourceStorageService _resourceStorageService;
 
-        public void Initialize(IResourceStorage resourceStorage)
+        public void Initialize(IResourceStorageService resourceStorageService)
         {
-            _resourceStorage = resourceStorage;
-            _resourceStorage.OnResourceChange += OnResourceChanged;
+            _resourceStorageService = resourceStorageService;
+            _resourceStorageService.OnResourceChange += OnResourceChanged;
         }
 
         private void OnResourceChanged(EFractionName fractionName, int score)
