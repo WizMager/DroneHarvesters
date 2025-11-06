@@ -12,7 +12,7 @@ using Utils;
 using Views;
 using Object = UnityEngine.Object;
 
-namespace Modules.Drone
+namespace Modules.Drone.Impl
 {
     public class DroneModule : IStartable, IUpdatable, IDisposable
     {

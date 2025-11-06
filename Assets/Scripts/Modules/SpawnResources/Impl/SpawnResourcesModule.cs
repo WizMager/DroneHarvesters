@@ -8,7 +8,7 @@ using Views;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
-namespace Modules.SpawnResources
+namespace Modules.SpawnResources.Impl
 {
     public class SpawnResourcesModule : ISpawnResourcesModule, IStartable, IDisposable
     {
