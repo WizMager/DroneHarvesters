@@ -7,6 +7,8 @@ namespace Modules.Drone.States
     {
         public void EnterState(IDroneController droneController)
         {
+            droneController.SetDroneState(EDroneState.Unload);
+            
             UnloadResourceToBase(droneController).Forget();
         }
 

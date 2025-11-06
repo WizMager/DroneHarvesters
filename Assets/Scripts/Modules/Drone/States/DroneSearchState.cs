@@ -12,6 +12,8 @@ namespace Modules.Drone.States
                 return;
             }
 
+            droneController.SetDroneState(EDroneState.Run);
+            
             var closestResource = droneController.FreeResourcesList[0];
             var closesDistance = (droneController.CurrentDronePosition - droneController.FreeResourcesList[0].transform.position).sqrMagnitude;
             

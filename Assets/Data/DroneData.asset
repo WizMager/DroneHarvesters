@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a51141e1e5174fe283b0470600b4f8b9, type: 3}
+  m_Name: DroneData
+  m_EditorClassIdentifier: 
+  _droneIcons:
+  - State: 1
+    Icon: {fileID: -604151366, guid: 9909f6a97266acd4ea6c86edb9043abf, type: 3}
+  - State: 2
+    Icon: {fileID: 344085282, guid: b406a1c9a2926424da756f2022972304, type: 3}
+  - State: 3
+    Icon: {fileID: -467597326, guid: 045b9c420ab29ed4896cbeec303c2367, type: 3}
+  - State: 4
+    Icon: {fileID: 468928583, guid: 715aeccf96c7d9b409c599b214b8faa6, type: 3}

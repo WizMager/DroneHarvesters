@@ -2,6 +2,7 @@
 using Core;
 using Core.Interfaces;
 using Db.Camera;
+using Db.Drone;
 using Modules.Camera;
 using Modules.Drone;
 using Modules.SpawnResources;
@@ -24,6 +25,7 @@ public class Bootstrap : MonoBehaviour
         [SerializeField] private UiController _uiController;
         
         [SerializeField] private CameraData _cameraData;
+        [SerializeField] private DroneData _droneData;
 
         private IModulesHandler _modulesHandler;
         private ISpawnResourcesModule _spawnResourcesModule;
@@ -45,7 +47,7 @@ public class Bootstrap : MonoBehaviour
                 _spawnResourcesModule.SpawnResourcesActivation(true);
                 modulesList.Add(spawnResourceModule);
                 
-                var droneModule = new DroneModule(_dronePrefab, _redBase, _blueBase, _spawnResourcesModule, _uiController, resourceStorageService);
+                var droneModule = new DroneModule(_dronePrefab, _redBase, _blueBase, _spawnResourcesModule, _uiController, resourceStorageService, _camera, _droneData);
                 modulesList.Add(droneModule);
                 
                 _uiController.Initialize(resourceStorageService);

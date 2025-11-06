@@ -1,4 +1,5 @@
-﻿using Modules.Drone;
+﻿using System;
+using Modules.Drone;
 using UnityEngine;
 using UnityEngine.AI;
 using Utils;
@@ -11,6 +12,10 @@ namespace Views
         [SerializeField] private LineRenderer _lineRenderer;
         [SerializeField] private ParticleSystem _unloadEffect;
         [SerializeField] private MeshRenderer _meshRenderer;
+        [SerializeField] private Transform _droneStatus;
+        [SerializeField] private SpriteRenderer _droneStatusIcon;
+
+        private Camera _camera;
         
         [field: SerializeField] public float ResourceCollectDistance { get; private set; } = 2;
         [field: SerializeField] public float BaseDestinationDistance { get; private set; } = 10;
@@ -24,11 +29,13 @@ namespace Views
 
         public void Initialize(
             IDroneController droneController,
-            EFractionName fractionName
+            EFractionName fractionName,
+            Camera camera
         )
         {
             DroneController = droneController;
             Fraction = fractionName;
+            _camera = camera;
             
             SetFractionColor(fractionName);
         }
@@ -74,6 +81,11 @@ namespace Views
             }
         }
         
+        public void SetDroneStateIcon(Sprite icon)
+        {
+            _droneStatusIcon.sprite = icon;
+        }
+        
         private void Start()
         {
             if (Agent == null)
@@ -95,6 +107,11 @@ namespace Views
         private void OnDisable()
         {
             IsActive = false;
+        }
+
+        private void Update()
+        {
+            _droneStatus.LookAt(_droneStatus.position + _camera.transform.rotation * Vector3.forward, _camera.transform.rotation * Vector3.up);
         }
 
         private void FixedUpdate()

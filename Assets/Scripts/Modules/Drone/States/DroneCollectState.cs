@@ -10,6 +10,7 @@ namespace Modules.Drone.States
         {
             if (droneController.FreeResourcesList.Contains(droneController.TargetResource))
             {
+                droneController.SetDroneState(EDroneState.Collect);
                 droneController.StartHarvestResource();
                 
                 ResourceHarvesting(droneController).Forget();
@@ -23,6 +24,8 @@ namespace Modules.Drone.States
         private async UniTaskVoid ResourceHarvesting(IDroneController droneController)
         {
             await UniTask.Delay(TimeSpan.FromSeconds(2));
+            
+            droneController.SetDroneState(EDroneState.Run);
             
             droneController.SetDestination(droneController.BasePosition);
         }

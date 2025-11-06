@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Db.Drone;
 using Modules.Drone.States;
 using UnityEngine;
 using Utils;
@@ -10,6 +11,7 @@ namespace Modules.Drone
     public class DroneController : IDroneController
     {
         private readonly DroneView _drone;
+        private readonly DroneData _droneData;
         
         private Transform _baseTransform;
         private IDroneState _currentState;
@@ -23,10 +25,15 @@ namespace Modules.Drone
         public Action<ResourceView> OnHarvestResource { get; set; }
         public Action<EFractionName> OnResourceUnload { get; set; }
 
-        public DroneController(DroneView drone, IReadOnlyList<ResourceView> freeResourcesList)
+        public DroneController(
+            DroneView drone, 
+            IReadOnlyList<ResourceView> freeResourcesList,
+            DroneData droneData
+        )
         {
             _drone = drone;
             FreeResourcesList = freeResourcesList;
+            _droneData = droneData;
         }
 
         public void Initialize(BaseView baseView)
@@ -78,6 +85,11 @@ namespace Modules.Drone
         public void StartHarvestResource()
         {
             OnHarvestResource?.Invoke(TargetResource);
+        }
+
+        public void SetDroneState(EDroneState state)
+        {
+            _drone.SetDroneStateIcon(_droneData.GetStatusIcon(state));
         }
     }
 }

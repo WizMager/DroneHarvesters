@@ -28,5 +28,6 @@ namespace Modules.Drone
         void StartUnload();
         void ResourceUnload();
         void StartHarvestResource();
+        void SetDroneState(EDroneState state);
     }
 }

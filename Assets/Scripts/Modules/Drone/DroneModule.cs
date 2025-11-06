@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Core.Interfaces;
 using Cysharp.Threading.Tasks;
+using Db.Drone;
 using Modules.SpawnResources;
 using Services.StoreResource;
 using Ui;
@@ -28,6 +29,8 @@ namespace Modules.Drone
         private readonly List<DroneView> _activeBlueDrones = new ();
         private readonly UiController _uiController;
         private readonly IResourceStorageService _resourceStorageService;
+        private readonly UnityEngine.Camera _camera;
+        private readonly DroneData _droneData;
         
         public IReadOnlyList<ResourceView> FreeResources => _freeResources;
         
@@ -42,7 +45,9 @@ namespace Modules.Drone
             BaseView blueBase, 
             ISpawnResourcesModule spawnResourcesModule,
             UiController uiController, 
-            IResourceStorageService resourceStorageService
+            IResourceStorageService resourceStorageService,
+            UnityEngine.Camera camera, 
+            DroneData droneData
         )
         {
             _dronePrefab = dronePrefab;
@@ -51,6 +56,8 @@ namespace Modules.Drone
             _spawnResourcesModule = spawnResourcesModule;
             _uiController = uiController;
             _resourceStorageService = resourceStorageService;
+            _camera = camera;
+            _droneData = droneData;
 
             _spawnResourcesModule.OnResourceSpawned += OnResourceSpawned;
             _redDronePool = new ObjectPool<DroneView>(CreateRedDrone, OnGetDrone, OnReleaseDrone);
@@ -143,8 +150,8 @@ namespace Modules.Drone
             var droneView = Object.Instantiate(_dronePrefab).GetComponent<DroneView>();
             droneView.SetDroneSpeed(_droneSpeed);
             droneView.SetIsDrawPath(_isDronePathEnabled);
-            var droneController = new DroneController(droneView, FreeResources);
-            droneView.Initialize(droneController, EFractionName.Red);
+            var droneController = new DroneController(droneView, FreeResources, _droneData);
+            droneView.Initialize(droneController, EFractionName.Red, _camera);
             droneController.Initialize(_redBase);
             droneController.OnHarvestResource += OnResourceHarvested;
             droneController.OnResourceUnload += OnResourceUnload;
@@ -160,8 +167,8 @@ namespace Modules.Drone
             var droneView = Object.Instantiate(_dronePrefab).GetComponent<DroneView>();
             droneView.SetDroneSpeed(_droneSpeed);
             droneView.SetIsDrawPath(_isDronePathEnabled);
-            var droneController = new DroneController(droneView, FreeResources);
-            droneView.Initialize(droneController, EFractionName.Blue);
+            var droneController = new DroneController(droneView, FreeResources, _droneData);
+            droneView.Initialize(droneController, EFractionName.Blue, _camera);
             droneController.Initialize(_blueBase);
             droneController.OnHarvestResource += OnResourceHarvested;
             droneController.OnResourceUnload += OnResourceUnload;

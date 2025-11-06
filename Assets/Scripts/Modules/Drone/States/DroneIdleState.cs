@@ -12,6 +12,8 @@ namespace Modules.Drone.States
         
         private async UniTaskVoid WaitUntilHasFreeResources(IDroneController droneController)
         {
+            droneController.SetDroneState(EDroneState.Idle);
+            
             await UniTask.Delay(TimeSpan.FromSeconds(0.3));
             
             await UniTask.WaitUntil(() => droneController.FreeResourcesList.Count > 0);
