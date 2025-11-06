@@ -1,6 +1,7 @@
 ﻿using System;
 using Core.Interfaces;
 using Cysharp.Threading.Tasks;
+using Ui;
 using UnityEngine;
 using UnityEngine.Pool;
 using Views;
@@ -15,6 +16,7 @@ namespace Modules.SpawnResources
         private readonly ResourcesSpawnArea _resourcesSpawnArea;
         private readonly Transform _resourceContainer;
         private readonly ObjectPool<ResourceView> _resourcePool;
+        private readonly UiController _uiController;
         
         private float _spawnResourcesCooldown;
         private bool _spawnResourcesEnabled;
@@ -23,14 +25,18 @@ namespace Modules.SpawnResources
         
         public ResourcesModule(
             GameObject resourceGameObject, 
-            ResourcesSpawnArea resourcesSpawnArea
+            ResourcesSpawnArea resourcesSpawnArea, 
+            UiController uiController
         )
         {
             _resourceGameObject = resourceGameObject;
             _resourcesSpawnArea = resourcesSpawnArea;
+            _uiController = uiController;
 
             _resourceContainer = new GameObject("ResourceContainer").GetComponent<Transform>();
             _resourcePool = new ObjectPool<ResourceView>(CreateResource, OnGetResource, OnReleaseResource);
+            
+            _uiController.OnResourceSpawnTimerChanged += SetSpawnResourcesSpeed;
         }
 
 #region Object Pool Methodos

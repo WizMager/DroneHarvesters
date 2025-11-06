@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Core;
 using Core.Interfaces;
 using Modules;
 using Modules.SpawnResources;
+using Ui;
 using UnityEngine;
 using Views;
 
@@ -14,6 +14,8 @@ public class Bootstrap : MonoBehaviour
         [SerializeField] private GameObject _dronePrefab;
         [SerializeField] private BaseView _redBase;
         [SerializeField] private BaseView _blueBase;
+        
+        [SerializeField] private UiController _uiController;
 
         private IModulesHandler _modulesHandler;
         private IResourcesModule _resourcesModule;
@@ -22,13 +24,13 @@ public class Bootstrap : MonoBehaviour
         {
                 var modulesList = new List<IModule>();
                 
-                var spawnResourceModule = new ResourcesModule(_resourcePrefab, _resourcesSpawnArea);
+                var spawnResourceModule = new ResourcesModule(_resourcePrefab, _resourcesSpawnArea, _uiController);
                 _resourcesModule = spawnResourceModule;
                 _resourcesModule.SetSpawnResourcesSpeed(2f);
                 _resourcesModule.SpawnResourcesActivation(true);
                 modulesList.Add(spawnResourceModule);
                 
-                var droneModule = new DroneModule(_dronePrefab, _redBase, _blueBase, _resourcesModule);
+                var droneModule = new DroneModule(_dronePrefab, _redBase, _blueBase, _resourcesModule, _uiController);
                 modulesList.Add(droneModule);
                 
                 _modulesHandler = new ModulesHandler(modulesList);

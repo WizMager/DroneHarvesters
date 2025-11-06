@@ -24,8 +24,6 @@ namespace Drone
         {
             _drone = drone;
             FreeResourcesList = freeResourcesList;
-            
-            _drone.Initialize(this);
         }
 
         public void Initialize(BaseView baseView)
