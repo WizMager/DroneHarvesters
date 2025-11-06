@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using Modules.StoreResource;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -27,7 +28,15 @@ namespace Ui
         [SerializeField] private TMP_InputField _resourceSpawnTimer;
         [SerializeField] private Toggle _dronePathToggle;
 
-        public void SetScore(EFractionName fractionName, int score)
+        private IResourceStorage _resourceStorage;
+
+        public void Initialize(IResourceStorage resourceStorage)
+        {
+            _resourceStorage = resourceStorage;
+            _resourceStorage.OnResourceChange += OnResourceChanged;
+        }
+
+        private void OnResourceChanged(EFractionName fractionName, int score)
         {
             switch (fractionName)
             {

@@ -2,7 +2,7 @@
 using System.Linq;
 using Cysharp.Threading.Tasks;
 
-namespace Drone
+namespace Modules.Drone.States
 {
     public class DroneCollectState : IDroneState
     {

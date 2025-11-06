@@ -1,4 +1,4 @@
-﻿using Drone;
+﻿using Modules.Drone;
 using UnityEngine;
 using UnityEngine.AI;
 using Utils;
@@ -9,6 +9,8 @@ namespace Views
     public class DroneView : MonoBehaviour
     {
         [SerializeField] private LineRenderer _lineRenderer;
+        [SerializeField] private ParticleSystem _unloadEffect;
+        [SerializeField] private MeshRenderer _meshRenderer;
         
         [field: SerializeField] public float ResourceCollectDistance { get; private set; } = 2;
         [field: SerializeField] public float BaseDestinationDistance { get; private set; } = 10;
@@ -27,6 +29,26 @@ namespace Views
         {
             DroneController = droneController;
             Fraction = fractionName;
+            
+            SetFractionColor(fractionName);
+        }
+
+        private void SetFractionColor(EFractionName fractionName)
+        {
+            var materialPropertyBlock = new MaterialPropertyBlock();
+            _meshRenderer.GetPropertyBlock(materialPropertyBlock);
+            
+            switch (fractionName)
+            {
+                case EFractionName.Red:
+                    materialPropertyBlock.SetColor("_BaseColor", Color.red);
+                    break;
+                case EFractionName.Blue:
+                    materialPropertyBlock.SetColor("_BaseColor", Color.blue);
+                    break;
+            }
+            
+            _meshRenderer.SetPropertyBlock(materialPropertyBlock);
         }
         
         public void SetDroneSpeed(float speed)
@@ -38,6 +60,18 @@ namespace Views
         public void SetIsDrawPath(bool isDrawPath)
         {
             IsDrawPath = isDrawPath;
+        }
+
+        public void UnloadActivation(bool isEnable)
+        {
+            if (isEnable)
+            {
+                _unloadEffect.Play();
+            }
+            else
+            {
+                _unloadEffect.Stop();
+            }
         }
         
         private void Start()

@@ -1,4 +1,4 @@
-﻿namespace Drone
+﻿namespace Modules.Drone.States
 {
     public interface IDroneState
     {

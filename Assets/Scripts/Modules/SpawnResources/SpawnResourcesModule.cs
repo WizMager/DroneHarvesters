@@ -10,7 +10,7 @@ using Random = UnityEngine.Random;
 
 namespace Modules.SpawnResources
 {
-    public class ResourcesModule : IResourcesModule, IStartable
+    public class SpawnResourcesModule : ISpawnResourcesModule, IStartable, IDisposable
     {
         private readonly GameObject _resourceGameObject;
         private readonly ResourcesSpawnArea _resourcesSpawnArea;
@@ -23,7 +23,7 @@ namespace Modules.SpawnResources
 
         public Action<ResourceView> OnResourceSpawned { get; set; }
         
-        public ResourcesModule(
+        public SpawnResourcesModule(
             GameObject resourceGameObject, 
             ResourcesSpawnArea resourcesSpawnArea, 
             UiController uiController
@@ -95,6 +95,11 @@ namespace Modules.SpawnResources
                 
                 await UniTask.Delay(TimeSpan.FromSeconds(_spawnResourcesCooldown));
             }
+        }
+
+        public void Dispose()
+        {
+            _uiController.OnResourceSpawnTimerChanged -= SetSpawnResourcesSpeed;
         }
     }
 }

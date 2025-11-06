@@ -1,7 +1,7 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
 
-namespace Drone
+namespace Modules.Drone.States
 {
     public class DroneIdleState : IDroneState
     {

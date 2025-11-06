@@ -1,7 +1,7 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
 
-namespace Drone
+namespace Modules.Drone.States
 {
     public class DroneReturnState : IDroneState
     {
@@ -12,7 +12,7 @@ namespace Drone
 
         private async UniTaskVoid UnloadResourceToBase(IDroneController droneController)
         {
-            //TODO: add visual effect of resource unload
+            droneController.StartUnload();
             
             await UniTask.Delay(TimeSpan.FromSeconds(1));
             

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Modules.Drone.States;
 using UnityEngine;
+using Utils;
 using Views;
 
-namespace Drone
+namespace Modules.Drone
 {
     public class DroneController : IDroneController
     {
@@ -19,6 +21,7 @@ namespace Drone
         public float BaseDestinationDistance => _drone.BaseDestinationDistance;
         public IReadOnlyList<ResourceView> FreeResourcesList { get; }
         public Action<ResourceView> OnHarvestResource { get; set; }
+        public Action<EFractionName> OnResourceUnload { get; set; }
 
         public DroneController(DroneView drone, IReadOnlyList<ResourceView> freeResourcesList)
         {
@@ -61,9 +64,15 @@ namespace Drone
             _drone?.Agent?.SetDestination(position);
         }
 
+        public void StartUnload()
+        {
+            _drone.UnloadActivation(true);
+        }
+        
         public void ResourceUnload()
         {
-            //TODO: add resource to base storage
+            _drone.UnloadActivation(false);
+            OnResourceUnload?.Invoke(_drone.Fraction);
         }
 
         public void StartHarvestResource()

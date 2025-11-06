@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using Core.Interfaces;
 using Cysharp.Threading.Tasks;
-using Drone;
 using Modules.SpawnResources;
+using Modules.StoreResource;
 using Ui;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -11,7 +11,7 @@ using Utils;
 using Views;
 using Object = UnityEngine.Object;
 
-namespace Modules
+namespace Modules.Drone
 {
     public class DroneModule : IStartable, IUpdatable, IDisposable
     {
@@ -21,12 +21,13 @@ namespace Modules
         private readonly List<IDroneController> _droneControllers = new ();
         private readonly ObjectPool<DroneView> _redDronePool;
         private readonly ObjectPool<DroneView> _blueDronePool;
-        private readonly IResourcesModule _resourcesModule;
+        private readonly ISpawnResourcesModule _spawnResourcesModule;
         private readonly List<ResourceView> _freeResources = new ();
         private readonly List<DroneView> _spawnedDrones = new ();
         private readonly List<DroneView> _activeRedDrones = new ();
         private readonly List<DroneView> _activeBlueDrones = new ();
         private readonly UiController _uiController;
+        private readonly IResourceStorage _resourceStorage;
         
         public IReadOnlyList<ResourceView> FreeResources => _freeResources;
         
@@ -39,17 +40,19 @@ namespace Modules
             GameObject dronePrefab, 
             BaseView redBase, 
             BaseView blueBase, 
-            IResourcesModule resourcesModule,
-            UiController uiController
+            ISpawnResourcesModule spawnResourcesModule,
+            UiController uiController, 
+            IResourceStorage resourceStorage
         )
         {
             _dronePrefab = dronePrefab;
             _redBase = redBase;
             _blueBase = blueBase;
-            _resourcesModule = resourcesModule;
+            _spawnResourcesModule = spawnResourcesModule;
             _uiController = uiController;
-            
-            _resourcesModule.OnResourceSpawned += OnResourceSpawned;
+            _resourceStorage = resourceStorage;
+
+            _spawnResourcesModule.OnResourceSpawned += OnResourceSpawned;
             _redDronePool = new ObjectPool<DroneView>(CreateRedDrone, OnGetDrone, OnReleaseDrone);
             _blueDronePool = new ObjectPool<DroneView>(CreateBlueDrone, OnGetDrone, OnReleaseDrone);
             
@@ -144,6 +147,7 @@ namespace Modules
             droneView.Initialize(droneController, EFractionName.Red);
             droneController.Initialize(_redBase);
             droneController.OnHarvestResource += OnResourceHarvested;
+            droneController.OnResourceUnload += OnResourceUnload;
             _droneControllers.Add(droneController);
             
             _spawnedDrones.Add(droneView);
@@ -160,12 +164,15 @@ namespace Modules
             droneView.Initialize(droneController, EFractionName.Blue);
             droneController.Initialize(_blueBase);
             droneController.OnHarvestResource += OnResourceHarvested;
+            droneController.OnResourceUnload += OnResourceUnload;
             _droneControllers.Add(droneController);
             
             _spawnedDrones.Add(droneView);
             
             return droneView;
         }
+
+        
 
         private void OnGetDrone(DroneView droneView)
         {
@@ -210,9 +217,14 @@ namespace Modules
             async UniTaskVoid WaitAndHarvest()
             {
                 await UniTask.Delay(TimeSpan.FromSeconds(2));
-            
-                _resourcesModule.ResourceHarvested(resourceView);
+                
+                _spawnResourcesModule.ResourceHarvested(resourceView);
             }
+        }
+        
+        private void OnResourceUnload(EFractionName fraction)
+        {
+            _resourceStorage.AddResource(fraction);
         }
         
         public void Start()
@@ -243,10 +255,16 @@ namespace Modules
 
         public void Dispose()
         {
-            _resourcesModule.OnResourceSpawned -= OnResourceSpawned;
+            _spawnResourcesModule.OnResourceSpawned -= OnResourceSpawned;
             _uiController.OnDroneCountChanged -= OnDroneCountChanged;
             _uiController.OnDronePathToggleChanged -= OnDronePathToggleChange;
             _uiController.OnDroneSpeedChanged -= OnDroneSpeedChange;
+
+            foreach (var droneController in _droneControllers)
+            {
+                droneController.OnHarvestResource -= OnResourceHarvested;
+                droneController.OnResourceUnload -= OnResourceUnload;
+            }
         }
     }
 }
