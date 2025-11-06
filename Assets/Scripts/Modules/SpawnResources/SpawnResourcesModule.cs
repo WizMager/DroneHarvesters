@@ -17,6 +17,7 @@ namespace Modules.SpawnResources
         private readonly Transform _resourceContainer;
         private readonly ObjectPool<ResourceView> _resourcePool;
         private readonly UiController _uiController;
+        private readonly MinimapController _minimapController;
         
         private float _spawnResourcesCooldown;
         private bool _spawnResourcesEnabled;
@@ -26,12 +27,14 @@ namespace Modules.SpawnResources
         public SpawnResourcesModule(
             GameObject resourceGameObject, 
             ResourcesSpawnArea resourcesSpawnArea, 
-            UiController uiController
+            UiController uiController, 
+            MinimapController minimapController
         )
         {
             _resourceGameObject = resourceGameObject;
             _resourcesSpawnArea = resourcesSpawnArea;
             _uiController = uiController;
+            _minimapController = minimapController;
 
             _resourceContainer = new GameObject("ResourceContainer").GetComponent<Transform>();
             _resourcePool = new ObjectPool<ResourceView>(CreateResource, OnGetResource, OnReleaseResource);
@@ -50,11 +53,13 @@ namespace Modules.SpawnResources
 
         private void OnGetResource(ResourceView resourceView)
         {
+            _minimapController.RegisterResource(resourceView.transform);
             resourceView.gameObject.SetActive(true);
         }
         
         private void OnReleaseResource(ResourceView resourceView)
         {
+            _minimapController.UnregisterResource(resourceView.transform);
             resourceView.gameObject.SetActive(false);
         }
 

@@ -31,6 +31,7 @@ namespace Modules.Drone
         private readonly IResourceStorageService _resourceStorageService;
         private readonly UnityEngine.Camera _camera;
         private readonly DroneData _droneData;
+        private readonly MinimapController _minimapController;
         
         public IReadOnlyList<ResourceView> FreeResources => _freeResources;
         
@@ -47,7 +48,8 @@ namespace Modules.Drone
             UiController uiController, 
             IResourceStorageService resourceStorageService,
             UnityEngine.Camera camera, 
-            DroneData droneData
+            DroneData droneData, 
+            MinimapController minimapController
         )
         {
             _dronePrefab = dronePrefab;
@@ -58,6 +60,7 @@ namespace Modules.Drone
             _resourceStorageService = resourceStorageService;
             _camera = camera;
             _droneData = droneData;
+            _minimapController = minimapController;
 
             _spawnResourcesModule.OnResourceSpawned += OnResourceSpawned;
             _redDronePool = new ObjectPool<DroneView>(CreateRedDrone, OnGetDrone, OnReleaseDrone);
@@ -179,16 +182,16 @@ namespace Modules.Drone
             return droneView;
         }
 
-        
-
         private void OnGetDrone(DroneView droneView)
         {
             switch (droneView.Fraction)
             {
                 case EFractionName.Red:
+                    _minimapController.RegisterUnit(droneView.transform, true);
                     _activeRedDrones.Add(droneView);
                     break;
                 case EFractionName.Blue:
+                    _minimapController.RegisterUnit(droneView.transform, false);
                     _activeBlueDrones.Add(droneView);
                     break;
             }
@@ -201,9 +204,11 @@ namespace Modules.Drone
             switch (droneView.Fraction)
             {
                 case EFractionName.Red:
+                    _minimapController.UnregisterUnit(droneView.transform, true);
                     _activeRedDrones.Remove(droneView);
                     break;
                 case EFractionName.Blue:
+                    _minimapController.UnregisterUnit(droneView.transform, false);
                     _activeBlueDrones.Remove(droneView);
                     break;
             }

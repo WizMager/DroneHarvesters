@@ -23,6 +23,7 @@ public class Bootstrap : MonoBehaviour
         [SerializeField] private Camera _camera;
         
         [SerializeField] private UiController _uiController;
+        [SerializeField] private MinimapController _minimapController;
         
         [SerializeField] private CameraData _cameraData;
         [SerializeField] private DroneData _droneData;
@@ -32,6 +33,9 @@ public class Bootstrap : MonoBehaviour
         
         private void Awake()
         {
+                _minimapController.RegisterBase(_redBase.transform, true);
+                _minimapController.RegisterBase(_blueBase.transform, false);
+                
                 var modulesList = new List<IModule>();
                 
                 IResourceStorageService resourceStorageService = new ResourceStorageService();
@@ -41,13 +45,13 @@ public class Bootstrap : MonoBehaviour
                 var cameraMove = new CameraMoveModule(_camera, inputService, _cameraData);
                 modulesList.Add(cameraMove);
                 
-                var spawnResourceModule = new SpawnResourcesModule(_resourcePrefab, _resourcesSpawnArea, _uiController);
+                var spawnResourceModule = new SpawnResourcesModule(_resourcePrefab, _resourcesSpawnArea, _uiController, _minimapController);
                 _spawnResourcesModule = spawnResourceModule;
                 _spawnResourcesModule.SetSpawnResourcesSpeed(2f);
                 _spawnResourcesModule.SpawnResourcesActivation(true);
                 modulesList.Add(spawnResourceModule);
                 
-                var droneModule = new DroneModule(_dronePrefab, _redBase, _blueBase, _spawnResourcesModule, _uiController, resourceStorageService, _camera, _droneData);
+                var droneModule = new DroneModule(_dronePrefab, _redBase, _blueBase, _spawnResourcesModule, _uiController, resourceStorageService, _camera, _droneData, _minimapController);
                 modulesList.Add(droneModule);
                 
                 _uiController.Initialize(resourceStorageService);
