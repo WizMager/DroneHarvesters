@@ -7,23 +7,23 @@ namespace Views
     {
         [SerializeField] private EFractionName _fraction;
         [SerializeField] private MeshRenderer _meshRenderer;
-
-        public void AddResource(int value)
-        {
-            
-        }
         
         private void Start()
         {
+            var materialPropertyBlock = new MaterialPropertyBlock();
+            _meshRenderer.GetPropertyBlock(materialPropertyBlock);
+            
             switch (_fraction)
             {
                 case EFractionName.Red:
-                    _meshRenderer.material.SetColor("_Color", Color.red);
+                    materialPropertyBlock.SetColor("_BaseColor", Color.red);
                     break;
                 case EFractionName.Blue:
-                    _meshRenderer.material.SetColor("_Color", Color.blue);
+                    materialPropertyBlock.SetColor("_BaseColor", Color.blue);
                     break;
             }
+            
+            _meshRenderer.SetPropertyBlock(materialPropertyBlock);
         }
     }
 }
