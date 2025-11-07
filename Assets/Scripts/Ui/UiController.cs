@@ -99,10 +99,14 @@ namespace Ui
         
         private void OnResourceSpawnTimerChange(string value)
         {
-            if (!int.TryParse(value, NumberStyles.Number, NumberFormatInfo.InvariantInfo, out var newTimer))
+            if (!float.TryParse(value, NumberStyles.Number, NumberFormatInfo.InvariantInfo, out var newTimer))
                 return;
 
-            _resourceSpawnTimerText.text = newTimer.ToString();
+            if (newTimer <= 0)
+            {
+                newTimer = 0.1f;
+            }
+            _resourceSpawnTimerText.text = newTimer.ToString(CultureInfo.InvariantCulture);
             OnResourceSpawnTimerChanged?.Invoke(newTimer);
         }
         

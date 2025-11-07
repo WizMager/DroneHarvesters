@@ -77,6 +77,11 @@ namespace Modules.Drone.Impl
         
         private void OnGetDrone(DroneView drone, MinimapController minimap)
         {
+            if (drone == null || drone.gameObject == null)
+            {
+                return;
+            }
+            
             var isRed = _fraction == EFractionName.Red;
             minimap.RegisterUnit(drone.transform, isRed);
             _activeDrones.Add(drone);
@@ -87,6 +92,11 @@ namespace Modules.Drone.Impl
         
         private void OnReleaseDrone(DroneView drone, MinimapController minimap)
         {
+            if (drone == null || drone.gameObject == null)
+            {
+                return;
+            }
+            
             var isRed = _fraction == EFractionName.Red;
             minimap.UnregisterUnit(drone.transform, isRed);
             _activeDrones.Remove(drone);

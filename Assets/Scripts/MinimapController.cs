@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-
 using System.Collections.Generic;
 using UnityEngine.UI;
 
@@ -44,15 +43,31 @@ public class MinimapController : MonoBehaviour
     
     public void UnregisterUnit(Transform unit, bool isRed)
     {
-        Destroy(unit.gameObject);
-        
         if (isRed)
         {
-            _redUnits.Remove(unit);
+            var index = _redUnits.IndexOf(unit);
+            if (index >= 0 && index < _redIcons.Count)
+            {
+                if (_redIcons[index] != null)
+                {
+                    Destroy(_redIcons[index].gameObject);
+                }
+                _redIcons.RemoveAt(index);
+                _redUnits.RemoveAt(index);
+            }
         }
         else
         {
-            _blueUnits.Remove(unit);
+            var index = _blueUnits.IndexOf(unit);
+            if (index >= 0 && index < _blueIcons.Count)
+            {
+                if (_blueIcons[index] != null)
+                {
+                    Destroy(_blueIcons[index].gameObject);
+                }
+                _blueIcons.RemoveAt(index);
+                _blueUnits.RemoveAt(index);
+            }
         }
     }
 
