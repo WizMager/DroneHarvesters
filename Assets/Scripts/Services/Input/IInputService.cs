@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Services.Input
 {
@@ -6,6 +7,7 @@ namespace Services.Input
     {
         Vector2 MoveDirection { get; }
         bool IsMoved { get; }
+        Action OnCancelPressed { get; set; }
 
         void Initialize();
     }

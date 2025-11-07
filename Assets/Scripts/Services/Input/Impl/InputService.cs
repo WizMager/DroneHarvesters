@@ -10,13 +10,20 @@ namespace Services.Input.Impl
         
         public Vector2 MoveDirection { get; private set; }
         public bool IsMoved { get; private set; }
+        public Action OnCancelPressed { get; set; }
 
         public void Initialize()
         {
             _inputSystemActions.Player.Move.performed += MovePerformed;
             _inputSystemActions.Player.Move.canceled += MoveCancel;
+            _inputSystemActions.Player.CancelFollow.performed += CancelFollowPerformed;
             
             _inputSystemActions.Enable();
+        }
+        
+        private void CancelFollowPerformed(InputAction.CallbackContext _)
+        {
+            OnCancelPressed?.Invoke();
         }
 
         private void MovePerformed(InputAction.CallbackContext context)
@@ -41,6 +48,7 @@ namespace Services.Input.Impl
         {
             _inputSystemActions.Player.Move.performed -= MovePerformed;
             _inputSystemActions.Player.Move.canceled -= MoveCancel;
+            _inputSystemActions.Player.CancelFollow.performed -= CancelFollowPerformed;
             
             _inputSystemActions.Disable();
             _inputSystemActions.Dispose();

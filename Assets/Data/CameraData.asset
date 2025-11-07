@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: CameraData
   m_EditorClassIdentifier: 
   MoveSpeed: 50
+  FollowOffset: {x: 0, y: 10, z: -5}

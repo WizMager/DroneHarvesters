@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using Utils;
 
 public class MinimapController : MonoBehaviour
@@ -25,6 +27,8 @@ public class MinimapController : MonoBehaviour
     private readonly List<Image> _redIcons = new();
     private readonly List<Image> _blueIcons = new();
     private readonly List<Image> _resourceIcons = new();
+    
+    public Action<Transform> OnUnitSelected;
 
     public void RegisterUnit(Transform unit, EFractionName fraction)
     {
@@ -36,6 +40,19 @@ public class MinimapController : MonoBehaviour
         units.Add(unit);
         var icon = Instantiate(prefab, _iconsContainer);
         icons.Add(icon);
+        
+        var button = icon.GetComponent<Button>();
+        if (button == null)
+        {
+            button = icon.gameObject.AddComponent<Button>();
+        }
+        
+        button.onClick.AddListener(() => OnUnitIconClicked(unit));
+    }
+    
+    private void OnUnitIconClicked(Transform unit)
+    {
+        OnUnitSelected?.Invoke(unit);
     }
     
     public void UnregisterUnit(Transform unit, EFractionName fraction)
@@ -79,13 +96,13 @@ public class MinimapController : MonoBehaviour
         for (var i = 0; i < _resourceIcons.Count; i++)
         {
             if (!_resourceIcons[i]) continue;
+
+            if ((Vector2)_resourceIcons[i].transform.localPosition != WorldToMap(resource.position)) 
+                continue;
             
-            if ((Vector2)_resourceIcons[i].transform.localPosition == WorldToMap(resource.position))
-            {
-                Destroy(_resourceIcons[i].gameObject);
-                _resourceIcons.RemoveAt(i);
-                break;
-            }
+            Destroy(_resourceIcons[i].gameObject);
+            _resourceIcons.RemoveAt(i);
+            break;
         }
     }
 

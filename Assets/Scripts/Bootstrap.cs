@@ -27,35 +27,34 @@ public class Bootstrap : MonoBehaviour
 
         private IModulesHandler _modulesHandler;
         private ISpawnResourcesModule _spawnResourcesModule;
+        private CameraMoveModule _cameraMoveModule;
+        private IInputService _inputService;
+        private IResourceStorageService _resourceStorageService;
         
         private void Awake()
         {
                 _minimapController.RegisterBase(_gameFieldProvider.GameField.RedBase.transform, true);
                 _minimapController.RegisterBase(_gameFieldProvider.GameField.BlueBase.transform, false);
                 
-                var services = CreateServices();
-                var modulesList = CreateModules(services);
+                _resourceStorageService = new ResourceStorageService();
+                _inputService = new InputService();
+                _inputService.Initialize();
                 
-                _uiController.Initialize(services.ResourceStorageService, _droneData, _resourceData);
+                CreateModules();
                 
-                _modulesHandler = new ModulesHandler(modulesList);
+                _uiController.Initialize(_resourceStorageService, _droneData, _resourceData);
+                
+                SetupCameraFollowing();
+                
                 _modulesHandler.Awake();
         }
         
-        private (IResourceStorageService ResourceStorageService, IInputService InputService) CreateServices()
-        {
-                IResourceStorageService resourceStorageService = new ResourceStorageService();
-                IInputService inputService = new InputService();
-                inputService.Initialize();
-                
-                return (resourceStorageService, inputService);
-        }
-        
-        private List<IModule> CreateModules((IResourceStorageService ResourceStorageService, IInputService InputService) services)
+        private void CreateModules()
         {
                 var modulesList = new List<IModule>();
                 
-                var cameraMove = new CameraMoveModule(_gameFieldProvider.GameField.Camera, services.InputService, _cameraData);
+                var cameraMove = new CameraMoveModule(_gameFieldProvider.GameField.Camera, _inputService, _cameraData);
+                _cameraMoveModule = cameraMove;
                 modulesList.Add(cameraMove);
                 
                 var spawnResourceModule = new SpawnResourcesModule(
@@ -74,14 +73,27 @@ public class Bootstrap : MonoBehaviour
                     _gameFieldProvider.GameField.BlueBase, 
                     _spawnResourcesModule, 
                     _uiController, 
-                    services.ResourceStorageService, 
+                    _resourceStorageService, 
                     _gameFieldProvider.GameField.Camera, 
                     _droneData,
                     _minimapController
                 );
                 modulesList.Add(droneModule);
-                
-                return modulesList;
+
+                _modulesHandler = new ModulesHandler(modulesList);
+        }
+        
+        private void SetupCameraFollowing()
+        {
+                _minimapController.OnUnitSelected += OnUnitSelected;
+        }
+
+        private void OnUnitSelected(Transform unit)
+        {
+                if (unit != null)
+                {
+                        _cameraMoveModule.StartFollowing(unit);
+                }
         }
 
         private void Start()
