@@ -1,0 +1,101 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Unity files
+*.cs text diff=csharp eol=lf
+*.js text eol=lf
+*.boo text eol=lf
+*.shader text eol=lf
+*.cginc text eol=lf
+*.hlsl text eol=lf
+
+# Unity meta files
+*.meta text eol=lf
+
+# Unity asset files
+*.asset text eol=lf
+*.prefab text eol=lf
+*.unity text eol=lf
+*.anim text eol=lf
+*.controller text eol=lf
+*.overrideController text eol=lf
+*.physicMaterial text eol=lf
+*.physicsMaterial2D text eol=lf
+*.playable text eol=lf
+*.preset text eol=lf
+*.mat text eol=lf
+*.spriteatlas text eol=lf
+*.asmdef text eol=lf
+*.asmref text eol=lf
+*.inputactions text eol=lf
+
+# YAML files
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# JSON files
+*.json text eol=lf
+
+# Text files
+*.txt text eol=lf
+*.md text eol=lf
+*.xml text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.mov binary
+*.mp4 binary
+*.mp3 binary
+*.pdf binary
+*.zip binary
+*.dll binary
+*.so binary
+*.dylib binary
+*.a binary
+*.exe binary
+*.pdb binary
+*.mdb binary
+*.cache binary
+
+# Unity generated files
+*.tmp binary
+*.user binary
+*.userprefs binary
+*.pidb binary
+*.booproj binary
+*.svd binary
+*.pdb binary
+*.mdb binary
+*.opendb binary
+*.VC.db binary
+
+# OS generated files
+.DS_Store binary
+.DS_Store? binary
+._* binary
+.Spotlight-V100 binary
+.Trashes binary
+ehthumbs.db binary
+Thumbs.db binary
+
+# Unity specific
+Library/ binary
+Temp/ binary
+obj/ binary
+Logs/ binary
+*.csproj text eol=lf
+*.sln text eol=lf
+
+# Package files
+Packages/manifest.json text eol=lf
+Packages/packages-lock.json text eol=lf
+
+# Project settings
+ProjectSettings/*.asset text eol=lf
+ProjectSettings/*.txt text eol=lf
+ProjectSettings/*.json text eol=lf
+

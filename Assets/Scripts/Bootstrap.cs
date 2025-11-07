@@ -25,7 +25,7 @@ public class Bootstrap : MonoBehaviour
         [SerializeField] private ResourceData _resourceData;
 
         private IModulesHandler _modulesHandler;
-        private ISpawnResourcesModule _spawnResourcesModule;
+        private IResourcesModule _resourcesModule;
         private IInputService _inputService;
         private IResourceStorageService _resourceStorageService;
         
@@ -52,21 +52,21 @@ public class Bootstrap : MonoBehaviour
                 var cameraMove = new CameraMoveModule(_gameFieldProvider.GameField.Camera, _inputService, _cameraData, _minimapController);
                 modulesList.Add(cameraMove);
                 
-                var spawnResourceModule = new SpawnResourcesModule(
+                var spawnResourceModule = new ResourcesModule(
                     _gameFieldProvider.GameField.ResourcePrefab, 
                     _gameFieldProvider.GameField.ResourcesSpawnArea, 
                     _uiController, 
                     _minimapController,
                     _resourceData.ResourceSpawnSpeed
                 );
-                _spawnResourcesModule = spawnResourceModule;
+                _resourcesModule = spawnResourceModule;
                 modulesList.Add(spawnResourceModule);
                 
                 var droneModule = new DroneModule(
                     _gameFieldProvider.GameField.DronePrefab, 
                     _gameFieldProvider.GameField.RedBase, 
                     _gameFieldProvider.GameField.BlueBase, 
-                    _spawnResourcesModule, 
+                    _resourcesModule, 
                     _uiController, 
                     _resourceStorageService, 
                     _gameFieldProvider.GameField.Camera, 

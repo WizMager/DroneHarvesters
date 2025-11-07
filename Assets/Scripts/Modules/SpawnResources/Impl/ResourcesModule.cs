@@ -10,7 +10,7 @@ using Random = UnityEngine.Random;
 
 namespace Modules.SpawnResources.Impl
 {
-    public class SpawnResourcesModule : ISpawnResourcesModule, IStartable, IDisposable
+    public class ResourcesModule : IResourcesModule, IStartable, IDisposable
     {
         private readonly GameObject _resourceGameObject;
         private readonly ResourcesSpawnArea _resourcesSpawnArea;
@@ -23,7 +23,7 @@ namespace Modules.SpawnResources.Impl
 
         public Action<ResourceView> OnResourceSpawned { get; set; }
         
-        public SpawnResourcesModule(
+        public ResourcesModule(
             GameObject resourceGameObject, 
             ResourcesSpawnArea resourcesSpawnArea, 
             UiController uiController, 

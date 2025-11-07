@@ -3,7 +3,7 @@ using Views;
 
 namespace Modules.SpawnResources
 {
-    public interface ISpawnResourcesModule
+    public interface IResourcesModule
     {
         Action<ResourceView>  OnResourceSpawned { get; set; }
         

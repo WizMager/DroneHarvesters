@@ -18,7 +18,7 @@ namespace Modules.Drone.Impl
         private readonly List<ResourceView> _freeResources = new();
         private readonly UiController _uiController;
         private readonly IResourceStorageService _resourceStorageService;
-        private readonly ISpawnResourcesModule _spawnResourcesModule;
+        private readonly IResourcesModule _resourcesModule;
 
         private float _droneSpeed;
         private bool _isDronePathEnabled;
@@ -27,7 +27,7 @@ namespace Modules.Drone.Impl
             GameObject dronePrefab, 
             BaseView redBase, 
             BaseView blueBase, 
-            ISpawnResourcesModule spawnResourcesModule,
+            IResourcesModule resourcesModule,
             UiController uiController, 
             IResourceStorageService resourceStorageService,
             UnityEngine.Camera camera, 
@@ -37,7 +37,7 @@ namespace Modules.Drone.Impl
         {
             _uiController = uiController;
             _resourceStorageService = resourceStorageService;
-            _spawnResourcesModule = spawnResourcesModule;
+            _resourcesModule = resourcesModule;
 
             _droneSpeed = droneData.DefaultDroneSpeed;
             _isDronePathEnabled = droneData.DefaultIsDronePathEnabled;
@@ -54,7 +54,7 @@ namespace Modules.Drone.Impl
                 OnResourceHarvested, OnResourceUnload, minimapController
             );
             
-            _spawnResourcesModule.OnResourceSpawned += OnResourceSpawned;
+            _resourcesModule.OnResourceSpawned += OnResourceSpawned;
             _uiController.OnDroneCountChanged += OnDroneCountChanged;
             _uiController.OnDronePathToggleChanged += OnDronePathToggleChange;
             _uiController.OnDroneSpeedChanged += OnDroneSpeedChange;
@@ -70,7 +70,7 @@ namespace Modules.Drone.Impl
             async UniTaskVoid WaitAndHarvest()
             {
                 await UniTask.Delay(TimeSpan.FromSeconds(2));
-                _spawnResourcesModule.ResourceHarvested(resourceView);
+                _resourcesModule.ResourceHarvested(resourceView);
             }
         }
         
@@ -130,7 +130,7 @@ namespace Modules.Drone.Impl
 
         public void Dispose()
         {
-            _spawnResourcesModule.OnResourceSpawned -= OnResourceSpawned;
+            _resourcesModule.OnResourceSpawned -= OnResourceSpawned;
             _uiController.OnDroneCountChanged -= OnDroneCountChanged;
             _uiController.OnDronePathToggleChanged -= OnDronePathToggleChange;
             _uiController.OnDroneSpeedChanged -= OnDroneSpeedChange;
