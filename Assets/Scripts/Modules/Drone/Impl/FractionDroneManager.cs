@@ -19,8 +19,8 @@ namespace Modules.Drone.Impl
         private readonly List<DroneView> _allDrones = new();
 
         private int _droneCount;
-        private float _currentSpeed = 10f;
-        private bool _currentPathEnabled = true;
+        private float _currentSpeed;
+        private bool _currentPathEnabled;
         
         public FractionDroneManager(
             EFractionName fraction,
@@ -29,6 +29,9 @@ namespace Modules.Drone.Impl
             IReadOnlyList<ResourceView> freeResources,
             DroneData droneData,
             UnityEngine.Camera camera,
+            int initialDroneCount,
+            float initialSpeed,
+            bool initialPathEnabled,
             Action<ResourceView> onHarvest,
             Action<EFractionName> onUnload,
             MinimapController minimapController
@@ -36,7 +39,9 @@ namespace Modules.Drone.Impl
         {
             _fraction = fraction;
             _base = baseView;
-            _droneCount = 3;
+            _droneCount = initialDroneCount;
+            _currentSpeed = initialSpeed;
+            _currentPathEnabled = initialPathEnabled;
             
             _pool = new ObjectPool<DroneView>(
                 () => CreateDrone(dronePrefab, freeResources, droneData, camera, onHarvest, onUnload),
@@ -44,6 +49,8 @@ namespace Modules.Drone.Impl
                 drone => OnReleaseDrone(drone, minimapController)
             );
         }
+
+#region Object Pool Methodos
         
         private DroneView CreateDrone(
             GameObject prefab,
@@ -85,6 +92,8 @@ namespace Modules.Drone.Impl
             _activeDrones.Remove(drone);
             drone.gameObject.SetActive(false);
         }
+        
+#endregion
         
         public void SetDroneCount(int newCount)
         {

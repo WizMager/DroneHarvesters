@@ -5983,6 +5983,7 @@ MonoBehaviour:
   _minimapController: {fileID: 567061603}
   _cameraData: {fileID: 11400000, guid: 19b65ecfee3215246aafb582d6a70f5e, type: 2}
   _droneData: {fileID: 11400000, guid: 02fae4799d1534e4da24b3ce6e6d21c2, type: 2}
+  _resourceData: {fileID: 11400000, guid: e264180532de6b24f887ed04aca2989e, type: 2}
 --- !u!4 &2019818921
 Transform:
   m_ObjectHideFlags: 0

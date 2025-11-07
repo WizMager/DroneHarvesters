@@ -14,6 +14,7 @@ namespace Modules.Drone
         Vector3 BasePosition { get; }
         float ResourceCollectDistance { get; }
         float BaseDestinationDistance { get; }
+        bool IsActive { get; }
         IReadOnlyList<ResourceView> FreeResourcesList { get; }
         Action<ResourceView> OnHarvestResource { get; set; }
         Action<EFractionName> OnResourceUnload { get; set; }

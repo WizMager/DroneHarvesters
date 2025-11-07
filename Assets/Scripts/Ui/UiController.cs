@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Globalization;
+using Db;
+using Db.Drone;
+using Db.Resource;
 using Services.StoreResource;
 using TMPro;
 using UnityEngine;
@@ -30,10 +33,26 @@ namespace Ui
 
         private IResourceStorageService _resourceStorageService;
 
-        public void Initialize(IResourceStorageService resourceStorageService)
+        public void Initialize(IResourceStorageService resourceStorageService, DroneData droneData, ResourceData resourceData)
         {
             _resourceStorageService = resourceStorageService;
             _resourceStorageService.OnResourceChange += OnResourceChanged;
+            
+            SetDefaultValues(droneData, resourceData);
+        }
+        
+        private void SetDefaultValues(DroneData droneData, ResourceData resourceData)
+        {
+            _redDroneCount.value = droneData.DefaultDroneCount;
+            _blueDroneCount.value = droneData.DefaultDroneCount;
+            _droneSpeed.value = droneData.DefaultDroneSpeed;
+            _resourceSpawnTimer.text = resourceData.ResourceSpawnSpeed.ToString(CultureInfo.InvariantCulture);
+            _dronePathToggle.isOn = droneData.DefaultIsDronePathEnabled;
+            
+            _redDroneCountText.text = droneData.DefaultDroneCount.ToString();
+            _blueDroneCountText.text = droneData.DefaultDroneCount.ToString();
+            _droneSpeedText.text = droneData.DefaultDroneSpeed.ToString(CultureInfo.InvariantCulture);
+            _resourceSpawnTimerText.text = resourceData.ResourceSpawnSpeed.ToString(CultureInfo.InvariantCulture);
         }
 
         private void OnResourceChanged(EFractionName fractionName, int score)

@@ -25,8 +25,12 @@ namespace Modules.Drone.States
         {
             await UniTask.Delay(TimeSpan.FromSeconds(2));
             
-            droneController.SetDroneState(EDroneState.Run);
+            if (droneController == null || !droneController.IsActive)
+            {
+                return;
+            }
             
+            droneController.SetDroneState(EDroneState.Run);
             droneController.SetDestination(droneController.BasePosition);
         }
 

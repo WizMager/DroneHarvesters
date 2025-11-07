@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using Core;
 using Core.Interfaces;
+using Db;
 using Db.Camera;
 using Db.Drone;
+using Db.Resource;
 using Modules.Camera;
 using Modules.Drone.Impl;
 using Modules.SpawnResources;
@@ -21,6 +23,7 @@ public class Bootstrap : MonoBehaviour
         [SerializeField] private MinimapController _minimapController;
         [SerializeField] private CameraData _cameraData;
         [SerializeField] private DroneData _droneData;
+        [SerializeField] private ResourceData _resourceData;
 
         private IModulesHandler _modulesHandler;
         private ISpawnResourcesModule _spawnResourcesModule;
@@ -43,11 +46,10 @@ public class Bootstrap : MonoBehaviour
                     _gameFieldProvider.GameField.ResourcePrefab, 
                     _gameFieldProvider.GameField.ResourcesSpawnArea, 
                     _uiController, 
-                    _minimapController
+                    _minimapController,
+                    _resourceData.ResourceSpawnSpeed
                 );
                 _spawnResourcesModule = spawnResourceModule;
-                _spawnResourcesModule.SetSpawnResourcesSpeed(2f);
-                _spawnResourcesModule.SpawnResourcesActivation(true);
                 modulesList.Add(spawnResourceModule);
                 
                 var droneModule = new DroneModule(
@@ -58,12 +60,12 @@ public class Bootstrap : MonoBehaviour
                     _uiController, 
                     resourceStorageService, 
                     _gameFieldProvider.GameField.Camera, 
-                    _droneData, 
+                    _droneData,
                     _minimapController
                 );
                 modulesList.Add(droneModule);
                 
-                _uiController.Initialize(resourceStorageService);
+                _uiController.Initialize(resourceStorageService, _droneData, _resourceData);
                 
                 _modulesHandler = new ModulesHandler(modulesList);
                 

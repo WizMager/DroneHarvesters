@@ -20,7 +20,6 @@ namespace Modules.SpawnResources.Impl
         private readonly MinimapController _minimapController;
         
         private float _spawnResourcesCooldown;
-        private bool _spawnResourcesEnabled;
 
         public Action<ResourceView> OnResourceSpawned { get; set; }
         
@@ -28,13 +27,15 @@ namespace Modules.SpawnResources.Impl
             GameObject resourceGameObject, 
             ResourcesSpawnArea resourcesSpawnArea, 
             UiController uiController, 
-            MinimapController minimapController
+            MinimapController minimapController,
+            float initialSpawnSpeed
         )
         {
             _resourceGameObject = resourceGameObject;
             _resourcesSpawnArea = resourcesSpawnArea;
             _uiController = uiController;
             _minimapController = minimapController;
+            _spawnResourcesCooldown = initialSpawnSpeed;
 
             _resourceContainer = new GameObject("ResourceContainer").GetComponent<Transform>();
             _resourcePool = new ObjectPool<ResourceView>(CreateResource, OnGetResource, OnReleaseResource);
@@ -69,11 +70,6 @@ namespace Modules.SpawnResources.Impl
             _spawnResourcesCooldown = newCooldown;
         }
 
-        public void SpawnResourcesActivation(bool isActive)
-        {
-            _spawnResourcesEnabled = isActive;
-        }
-        
         public void Start()
         {
             SpawnResources().Forget();
@@ -86,7 +82,7 @@ namespace Modules.SpawnResources.Impl
         
         private async UniTaskVoid SpawnResources()
         {
-            while (_spawnResourcesEnabled)
+            while (true)
             {
                 var randomCirclePosition = Random.onUnitSphere;
                 randomCirclePosition.y = 0;

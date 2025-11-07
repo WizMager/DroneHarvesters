@@ -83,7 +83,10 @@ namespace Views
         
         public void SetDroneStateIcon(Sprite icon)
         {
-            _droneStatusIcon.sprite = icon;
+            if (_droneStatusIcon != null && _droneStatusIcon.gameObject != null)
+            {
+                _droneStatusIcon.sprite = icon;
+            }
         }
         
         private void Start()

@@ -7,8 +7,6 @@ namespace Modules.SpawnResources
     {
         Action<ResourceView>  OnResourceSpawned { get; set; }
         
-        void SetSpawnResourcesSpeed(float newCooldown);
-        void SpawnResourcesActivation(bool isActive);
         void ResourceHarvested(ResourceView resourceView);
     }
 }

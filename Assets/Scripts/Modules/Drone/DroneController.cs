@@ -21,6 +21,7 @@ namespace Modules.Drone
         public Vector3 BasePosition => _baseTransform.position;
         public float ResourceCollectDistance => _drone.ResourceCollectDistance;
         public float BaseDestinationDistance => _drone.BaseDestinationDistance;
+        public bool IsActive => _drone != null && _drone.IsActive;
         public IReadOnlyList<ResourceView> FreeResourcesList { get; }
         public Action<ResourceView> OnHarvestResource { get; set; }
         public Action<EFractionName> OnResourceUnload { get; set; }
@@ -89,7 +90,10 @@ namespace Modules.Drone
 
         public void SetDroneState(EDroneState state)
         {
-            _drone.SetDroneStateIcon(_droneData.GetStatusIcon(state));
+            if (_drone != null && _drone.IsActive)
+            {
+                _drone.SetDroneStateIcon(_droneData.GetStatusIcon(state));
+            }
         }
     }
 }

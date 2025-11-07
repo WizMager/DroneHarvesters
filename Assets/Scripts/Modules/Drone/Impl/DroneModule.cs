@@ -19,9 +19,9 @@ namespace Modules.Drone.Impl
         private readonly UiController _uiController;
         private readonly IResourceStorageService _resourceStorageService;
         private readonly ISpawnResourcesModule _spawnResourcesModule;
-        
-        private float _droneSpeed = 10f;
-        private bool _isDronePathEnabled = true;
+
+        private float _droneSpeed;
+        private bool _isDronePathEnabled;
         
         public DroneModule(
             GameObject dronePrefab, 
@@ -31,7 +31,7 @@ namespace Modules.Drone.Impl
             UiController uiController, 
             IResourceStorageService resourceStorageService,
             UnityEngine.Camera camera, 
-            DroneData droneData, 
+            DroneData droneData,
             MinimapController minimapController
         )
         {
@@ -39,15 +39,18 @@ namespace Modules.Drone.Impl
             _resourceStorageService = resourceStorageService;
             _spawnResourcesModule = spawnResourcesModule;
 
-            
+            _droneSpeed = droneData.DefaultDroneSpeed;
+            _isDronePathEnabled = droneData.DefaultIsDronePathEnabled;
             
             _fractionManagers[EFractionName.Red] = new FractionDroneManager(
                 EFractionName.Red, redBase, dronePrefab, _freeResources, droneData, camera,
+                droneData.DefaultDroneCount, _droneSpeed, _isDronePathEnabled,
                 OnResourceHarvested, OnResourceUnload, minimapController
             );
             
             _fractionManagers[EFractionName.Blue] = new FractionDroneManager(
                 EFractionName.Blue, blueBase, dronePrefab, _freeResources, droneData, camera,
+                droneData.DefaultDroneCount, _droneSpeed, _isDronePathEnabled,
                 OnResourceHarvested, OnResourceUnload, minimapController
             );
             
