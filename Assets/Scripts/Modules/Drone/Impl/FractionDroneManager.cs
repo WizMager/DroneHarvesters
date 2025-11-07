@@ -82,8 +82,7 @@ namespace Modules.Drone.Impl
                 return;
             }
             
-            var isRed = _fraction == EFractionName.Red;
-            minimap.RegisterUnit(drone.transform, isRed);
+            minimap.RegisterUnit(drone.transform, _fraction);
             _activeDrones.Add(drone);
             drone.SetDroneSpeed(_currentSpeed);
             drone.SetIsDrawPath(_currentPathEnabled);
@@ -97,8 +96,7 @@ namespace Modules.Drone.Impl
                 return;
             }
             
-            var isRed = _fraction == EFractionName.Red;
-            minimap.UnregisterUnit(drone.transform, isRed);
+            minimap.UnregisterUnit(drone.transform, _fraction);
             _activeDrones.Remove(drone);
             drone.gameObject.SetActive(false);
         }

@@ -79,16 +79,19 @@ namespace Ui
 
         private void OnRedDroneCountChange(float value)
         {
-            var newDroneCount = (int)value;
-            _redDroneCountText.text = newDroneCount.ToString();
-            OnDroneCountChanged?.Invoke(EFractionName.Red, newDroneCount);
+            OnDroneCountChange(EFractionName.Red, value, _redDroneCountText);
         }
 
         private void OnBlueDroneCountChange(float value)
         {
+            OnDroneCountChange(EFractionName.Blue, value, _blueDroneCountText);
+        }
+        
+        private void OnDroneCountChange(EFractionName fraction, float value, TMP_Text textField)
+        {
             var newDroneCount = (int)value;
-            _blueDroneCountText.text = newDroneCount.ToString();
-            OnDroneCountChanged?.Invoke(EFractionName.Blue, newDroneCount);
+            textField.text = newDroneCount.ToString();
+            OnDroneCountChanged?.Invoke(fraction, newDroneCount);
         }
 
         private void OnDroneSpeedChange(float value)

@@ -40,7 +40,7 @@ namespace Services.Input.Impl
         public void Dispose()
         {
             _inputSystemActions.Player.Move.performed -= MovePerformed;
-            _inputSystemActions.Player.Move.canceled -= MovePerformed;
+            _inputSystemActions.Player.Move.canceled -= MoveCancel;
             
             _inputSystemActions.Disable();
             _inputSystemActions.Dispose();

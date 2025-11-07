@@ -18,6 +18,11 @@ namespace Modules.Drone.States
             
             await UniTask.WaitUntil(() => droneController.FreeResourcesList.Count > 0);
             
+            if (!droneController.IsActive)
+            {
+                return;
+            }
+            
             droneController.ChangeState(new DroneSearchState());
         }
 

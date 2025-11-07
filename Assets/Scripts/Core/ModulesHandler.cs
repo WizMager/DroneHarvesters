@@ -14,29 +14,21 @@ namespace Core
         {
             foreach (var module in modules)
             {
-                if (module is IAwakable awakable)
-                {
-                    _awakables.Add(awakable);
-                }
-                
-                if (module is IStartable startable)
-                {
-                    _startables.Add(startable);
-                }
-                
-                if (module is IUpdatable updatable)
-                {
-                    _updatables.Add(updatable);
-                }
-                
-                if (module is IFixedUpdatable fixedUpdatable)
-                {
-                    _fixedUpdatables.Add(fixedUpdatable);
-                }
+                RegisterModule(module);
             }
         }
 
         public void AddModule(IModule module)
+        {
+            RegisterModule(module);
+        }
+
+        public void RemoveModule(IModule module)
+        {
+            UnregisterModule(module);
+        }
+        
+        private void RegisterModule(IModule module)
         {
             if (module is IAwakable awakable)
             {
@@ -58,8 +50,8 @@ namespace Core
                 _fixedUpdatables.Add(fixedUpdatable);
             }
         }
-
-        public void RemoveModule(IModule module)
+        
+        private void UnregisterModule(IModule module)
         {
             if (module is IAwakable awakable)
             {

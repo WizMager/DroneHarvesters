@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using Utils;
 
 public class MinimapController : MonoBehaviour
 {
@@ -25,50 +26,37 @@ public class MinimapController : MonoBehaviour
     private readonly List<Image> _blueIcons = new();
     private readonly List<Image> _resourceIcons = new();
 
-    public void RegisterUnit(Transform unit, bool isRed)
+    public void RegisterUnit(Transform unit, EFractionName fraction)
     {
-        if (isRed)
-        {
-            _redUnits.Add(unit);
-            var icon = Instantiate(_iconRedDronePrefab, _iconsContainer);
-            _redIcons.Add(icon);
-        }
-        else
-        {
-            _blueUnits.Add(unit);
-            var icon = Instantiate(_iconBlueDronePrefab, _iconsContainer);
-            _blueIcons.Add(icon);
-        }
+        var isRed = fraction == EFractionName.Red;
+        var units = isRed ? _redUnits : _blueUnits;
+        var icons = isRed ? _redIcons : _blueIcons;
+        var prefab = isRed ? _iconRedDronePrefab : _iconBlueDronePrefab;
+        
+        units.Add(unit);
+        var icon = Instantiate(prefab, _iconsContainer);
+        icons.Add(icon);
     }
     
-    public void UnregisterUnit(Transform unit, bool isRed)
+    public void UnregisterUnit(Transform unit, EFractionName fraction)
     {
-        if (isRed)
+        var isRed = fraction == EFractionName.Red;
+        var units = isRed ? _redUnits : _blueUnits;
+        var icons = isRed ? _redIcons : _blueIcons;
+        
+        var index = units.IndexOf(unit);
+        if (index < 0 || index >= icons.Count)
         {
-            var index = _redUnits.IndexOf(unit);
-            if (index >= 0 && index < _redIcons.Count)
-            {
-                if (_redIcons[index] != null)
-                {
-                    Destroy(_redIcons[index].gameObject);
-                }
-                _redIcons.RemoveAt(index);
-                _redUnits.RemoveAt(index);
-            }
+            return;
         }
-        else
+        
+        if (icons[index] != null)
         {
-            var index = _blueUnits.IndexOf(unit);
-            if (index >= 0 && index < _blueIcons.Count)
-            {
-                if (_blueIcons[index] != null)
-                {
-                    Destroy(_blueIcons[index].gameObject);
-                }
-                _blueIcons.RemoveAt(index);
-                _blueUnits.RemoveAt(index);
-            }
+            Destroy(icons[index].gameObject);
         }
+        
+        icons.RemoveAt(index);
+        units.RemoveAt(index);
     }
 
     public void RegisterBase(Transform baseTransform, bool isRed)
@@ -103,17 +91,18 @@ public class MinimapController : MonoBehaviour
 
     private void Update()
     {
-        for (var i = 0; i < _redUnits.Count; i++)
+        UpdateUnitIcons(_redUnits, _redIcons);
+        UpdateUnitIcons(_blueUnits, _blueIcons);
+    }
+    
+    private void UpdateUnitIcons(List<Transform> units, List<Image> icons)
+    {
+        for (var i = 0; i < units.Count && i < icons.Count; i++)
         {
-            if (_redUnits[i] == null) continue;
-            _redIcons[i].transform.localPosition = WorldToMap(_redUnits[i].position);
-        }
-
-        for (var i = 0; i < _blueUnits.Count; i++)
-        {
-            if (_blueUnits[i] == null) continue;
-            
-            _blueIcons[i].transform.localPosition = WorldToMap(_blueUnits[i].position);
+            if (units[i] == null || icons[i] == null) 
+                continue;
+                
+            icons[i].transform.localPosition = WorldToMap(units[i].position);
         }
     }
 

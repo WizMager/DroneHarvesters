@@ -33,13 +33,29 @@ public class Bootstrap : MonoBehaviour
                 _minimapController.RegisterBase(_gameFieldProvider.GameField.RedBase.transform, true);
                 _minimapController.RegisterBase(_gameFieldProvider.GameField.BlueBase.transform, false);
                 
-                var modulesList = new List<IModule>();
+                var services = CreateServices();
+                var modulesList = CreateModules(services);
                 
+                _uiController.Initialize(services.ResourceStorageService, _droneData, _resourceData);
+                
+                _modulesHandler = new ModulesHandler(modulesList);
+                _modulesHandler.Awake();
+        }
+        
+        private (IResourceStorageService ResourceStorageService, IInputService InputService) CreateServices()
+        {
                 IResourceStorageService resourceStorageService = new ResourceStorageService();
                 IInputService inputService = new InputService();
                 inputService.Initialize();
                 
-                var cameraMove = new CameraMoveModule(_gameFieldProvider.GameField.Camera, inputService, _cameraData);
+                return (resourceStorageService, inputService);
+        }
+        
+        private List<IModule> CreateModules((IResourceStorageService ResourceStorageService, IInputService InputService) services)
+        {
+                var modulesList = new List<IModule>();
+                
+                var cameraMove = new CameraMoveModule(_gameFieldProvider.GameField.Camera, services.InputService, _cameraData);
                 modulesList.Add(cameraMove);
                 
                 var spawnResourceModule = new SpawnResourcesModule(
@@ -58,18 +74,14 @@ public class Bootstrap : MonoBehaviour
                     _gameFieldProvider.GameField.BlueBase, 
                     _spawnResourcesModule, 
                     _uiController, 
-                    resourceStorageService, 
+                    services.ResourceStorageService, 
                     _gameFieldProvider.GameField.Camera, 
                     _droneData,
                     _minimapController
                 );
                 modulesList.Add(droneModule);
                 
-                _uiController.Initialize(resourceStorageService, _droneData, _resourceData);
-                
-                _modulesHandler = new ModulesHandler(modulesList);
-                
-                _modulesHandler.Awake();
+                return modulesList;
         }
 
         private void Start()

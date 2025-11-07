@@ -18,8 +18,12 @@ namespace Modules.Drone.States
             
             await UniTask.Delay(TimeSpan.FromSeconds(1));
             
-            droneController.ResourceUnload();
+            if (!droneController.IsActive)
+            {
+                return;
+            }
             
+            droneController.ResourceUnload();
             droneController.ChangeState(new DroneIdleState());
         } 
 
