@@ -19,6 +19,8 @@ namespace Modules.Drone.Impl
         private readonly List<DroneView> _allDrones = new();
 
         private int _droneCount;
+        private float _currentSpeed = 10f;
+        private bool _currentPathEnabled = true;
         
         public FractionDroneManager(
             EFractionName fraction,
@@ -27,8 +29,6 @@ namespace Modules.Drone.Impl
             IReadOnlyList<ResourceView> freeResources,
             DroneData droneData,
             UnityEngine.Camera camera,
-            float droneSpeed,
-            bool isPathEnabled,
             Action<ResourceView> onHarvest,
             Action<EFractionName> onUnload,
             MinimapController minimapController
@@ -39,7 +39,7 @@ namespace Modules.Drone.Impl
             _droneCount = 3;
             
             _pool = new ObjectPool<DroneView>(
-                () => CreateDrone(dronePrefab, freeResources, droneData, camera, droneSpeed, isPathEnabled, onHarvest, onUnload),
+                () => CreateDrone(dronePrefab, freeResources, droneData, camera, onHarvest, onUnload),
                 drone => OnGetDrone(drone, minimapController),
                 drone => OnReleaseDrone(drone, minimapController)
             );
@@ -50,15 +50,11 @@ namespace Modules.Drone.Impl
             IReadOnlyList<ResourceView> freeResources,
             DroneData droneData,
             UnityEngine.Camera camera,
-            float speed,
-            bool isPathEnabled,
             Action<ResourceView> onHarvest,
             Action<EFractionName> onUnload
         )
         {
             var droneView = Object.Instantiate(prefab).GetComponent<DroneView>();
-            droneView.SetDroneSpeed(speed);
-            droneView.SetIsDrawPath(isPathEnabled);
             
             var controller = new DroneController(droneView, freeResources, droneData);
             droneView.Initialize(controller, _fraction, camera);
@@ -77,6 +73,8 @@ namespace Modules.Drone.Impl
             var isRed = _fraction == EFractionName.Red;
             minimap.RegisterUnit(drone.transform, isRed);
             _activeDrones.Add(drone);
+            drone.SetDroneSpeed(_currentSpeed);
+            drone.SetIsDrawPath(_currentPathEnabled);
             drone.gameObject.SetActive(true);
         }
         
@@ -132,6 +130,8 @@ namespace Modules.Drone.Impl
         
         public void SetSpeed(float speed)
         {
+            _currentSpeed = speed;
+            
             foreach (var drone in _allDrones)
             {
                 drone.SetDroneSpeed(speed);
@@ -140,6 +140,8 @@ namespace Modules.Drone.Impl
         
         public void SetPathEnabled(bool enabled)
         {
+            _currentPathEnabled = enabled;
+            
             foreach (var drone in _allDrones)
             {
                 drone.SetIsDrawPath(enabled);

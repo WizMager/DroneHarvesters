@@ -7,7 +7,7 @@ using Modules.Camera;
 using Modules.Drone.Impl;
 using Modules.SpawnResources;
 using Modules.SpawnResources.Impl;
-using Services.GameFieldProvider.Impl;
+using Services.GameFieldProvider;
 using Services.Input;
 using Services.Input.Impl;
 using Services.StoreResource;
