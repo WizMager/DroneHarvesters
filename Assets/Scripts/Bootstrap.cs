@@ -4,29 +4,21 @@ using Core.Interfaces;
 using Db.Camera;
 using Db.Drone;
 using Modules.Camera;
-using Modules.Drone;
 using Modules.Drone.Impl;
 using Modules.SpawnResources;
 using Modules.SpawnResources.Impl;
+using Services.GameFieldProvider.Impl;
 using Services.Input;
 using Services.Input.Impl;
 using Services.StoreResource;
 using Ui;
 using UnityEngine;
-using Views;
 
 public class Bootstrap : MonoBehaviour
 {
-        [SerializeField] private ResourcesSpawnArea _resourcesSpawnArea;
-        [SerializeField] private GameObject _resourcePrefab;
-        [SerializeField] private GameObject _dronePrefab;
-        [SerializeField] private BaseView _redBase;
-        [SerializeField] private BaseView _blueBase;
-        [SerializeField] private Camera _camera;
-        
+        [SerializeField] private GameFieldProvider _gameFieldProvider;
         [SerializeField] private UiController _uiController;
         [SerializeField] private MinimapController _minimapController;
-        
         [SerializeField] private CameraData _cameraData;
         [SerializeField] private DroneData _droneData;
 
@@ -35,8 +27,8 @@ public class Bootstrap : MonoBehaviour
         
         private void Awake()
         {
-                _minimapController.RegisterBase(_redBase.transform, true);
-                _minimapController.RegisterBase(_blueBase.transform, false);
+                _minimapController.RegisterBase(_gameFieldProvider.GameField.RedBase.transform, true);
+                _minimapController.RegisterBase(_gameFieldProvider.GameField.BlueBase.transform, false);
                 
                 var modulesList = new List<IModule>();
                 
@@ -44,16 +36,31 @@ public class Bootstrap : MonoBehaviour
                 IInputService inputService = new InputService();
                 inputService.Initialize();
                 
-                var cameraMove = new CameraMoveModule(_camera, inputService, _cameraData);
+                var cameraMove = new CameraMoveModule(_gameFieldProvider.GameField.Camera, inputService, _cameraData);
                 modulesList.Add(cameraMove);
                 
-                var spawnResourceModule = new SpawnResourcesModule(_resourcePrefab, _resourcesSpawnArea, _uiController, _minimapController);
+                var spawnResourceModule = new SpawnResourcesModule(
+                    _gameFieldProvider.GameField.ResourcePrefab, 
+                    _gameFieldProvider.GameField.ResourcesSpawnArea, 
+                    _uiController, 
+                    _minimapController
+                );
                 _spawnResourcesModule = spawnResourceModule;
                 _spawnResourcesModule.SetSpawnResourcesSpeed(2f);
                 _spawnResourcesModule.SpawnResourcesActivation(true);
                 modulesList.Add(spawnResourceModule);
                 
-                var droneModule = new DroneModule(_dronePrefab, _redBase, _blueBase, _spawnResourcesModule, _uiController, resourceStorageService, _camera, _droneData, _minimapController);
+                var droneModule = new DroneModule(
+                    _gameFieldProvider.GameField.DronePrefab, 
+                    _gameFieldProvider.GameField.RedBase, 
+                    _gameFieldProvider.GameField.BlueBase, 
+                    _spawnResourcesModule, 
+                    _uiController, 
+                    resourceStorageService, 
+                    _gameFieldProvider.GameField.Camera, 
+                    _droneData, 
+                    _minimapController
+                );
                 modulesList.Add(droneModule);
                 
                 _uiController.Initialize(resourceStorageService);

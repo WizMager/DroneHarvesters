@@ -2309,6 +2309,70 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &698711145
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 698711148}
+  - component: {fileID: 698711146}
+  - component: {fileID: 698711149}
+  m_Layer: 0
+  m_Name: GameField
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &698711146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 698711145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d5e658f4635b6849967f09ab4877114, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ResourcesSpawnArea>k__BackingField: {fileID: 903205315}
+  <ResourcePrefab>k__BackingField: {fileID: 6696706987885018561, guid: e256e6301379a0f47aa914140c6285b5, type: 3}
+  <DronePrefab>k__BackingField: {fileID: 6188621724391187241, guid: 596550ad215d092479df47403601e8dd, type: 3}
+  <RedBase>k__BackingField: {fileID: 1080629589}
+  <BlueBase>k__BackingField: {fileID: 60714815}
+  <Camera>k__BackingField: {fileID: 330585545}
+--- !u!4 &698711148
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 698711145}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &698711149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 698711145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 288bc3fe92a84e54a6dc20033c913a4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <GameField>k__BackingField: {fileID: 698711146}
 --- !u!1 &702767117
 GameObject:
   m_ObjectHideFlags: 0
@@ -3582,6 +3646,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1126244277}
   m_CullTransparentMesh: 1
+--- !u!1 &1137378205
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1137378206}
+  m_Layer: 0
+  m_Name: ------------------------------------
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1137378206
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1137378205}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1155197439
 GameObject:
   m_ObjectHideFlags: 0
@@ -5883,12 +5978,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 521753035fe9469db0f338571c78670a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _resourcesSpawnArea: {fileID: 903205315}
-  _resourcePrefab: {fileID: 6696706987885018561, guid: e256e6301379a0f47aa914140c6285b5, type: 3}
-  _dronePrefab: {fileID: 6188621724391187241, guid: 596550ad215d092479df47403601e8dd, type: 3}
-  _redBase: {fileID: 1080629589}
-  _blueBase: {fileID: 60714815}
-  _camera: {fileID: 330585545}
+  _gameFieldProvider: {fileID: 698711149}
   _uiController: {fileID: 2125837770}
   _minimapController: {fileID: 567061603}
   _cameraData: {fileID: 11400000, guid: 19b65ecfee3215246aafb582d6a70f5e, type: 2}
@@ -6188,7 +6278,9 @@ SceneRoots:
   - {fileID: 1559252359}
   - {fileID: 903205314}
   - {fileID: 394954013}
+  - {fileID: 698711148}
   - {fileID: 2019818921}
+  - {fileID: 567061604}
+  - {fileID: 1137378206}
   - {fileID: 2125837769}
   - {fileID: 1908485728}
-  - {fileID: 567061604}
