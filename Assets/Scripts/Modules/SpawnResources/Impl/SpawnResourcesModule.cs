@@ -53,7 +53,6 @@ namespace Modules.SpawnResources.Impl
 
         private void OnGetResource(ResourceView resourceView)
         {
-            _minimapController.RegisterResource(resourceView.transform);
             resourceView.gameObject.SetActive(true);
         }
         
@@ -93,8 +92,10 @@ namespace Modules.SpawnResources.Impl
                 randomCirclePosition.y = 0;
                 var spawnPosition = _resourcesSpawnArea.transform.position + randomCirclePosition * _resourcesSpawnArea.Radius;
                 spawnPosition.y = 1;
+                
                 var resourceView = _resourcePool.Get();
                 resourceView.transform.position = spawnPosition;
+                _minimapController.RegisterResource(resourceView.transform);
                 
                 OnResourceSpawned?.Invoke(resourceView);
                 
