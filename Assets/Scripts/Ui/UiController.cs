@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using Db;
 using Db.Drone;
 using Db.Resource;
 using Services.StoreResource;
@@ -30,6 +29,7 @@ namespace Ui
         [SerializeField] private Slider _droneSpeed;
         [SerializeField] private TMP_InputField _resourceSpawnTimer;
         [SerializeField] private Toggle _dronePathToggle;
+        [SerializeField] private Button _exitButton;
 
         private IResourceStorageService _resourceStorageService;
 
@@ -75,6 +75,7 @@ namespace Ui
             _droneSpeed.onValueChanged.AddListener(OnDroneSpeedChange);
             _resourceSpawnTimer.onValueChanged.AddListener(OnResourceSpawnTimerChange);
             _dronePathToggle.onValueChanged.AddListener(OnDronePathToggleChange);
+            _exitButton.onClick.AddListener(OnExitButtonClick);
         }
 
         private void OnRedDroneCountChange(float value)
@@ -102,13 +103,14 @@ namespace Ui
         
         private void OnResourceSpawnTimerChange(string value)
         {
-            if (!float.TryParse(value, NumberStyles.Number, NumberFormatInfo.InvariantInfo, out var newTimer))
+            if (!float.TryParse(value, out var newTimer))
                 return;
 
             if (newTimer <= 0)
             {
                 newTimer = 0.1f;
             }
+            
             _resourceSpawnTimerText.text = newTimer.ToString(CultureInfo.InvariantCulture);
             OnResourceSpawnTimerChanged?.Invoke(newTimer);
         }
@@ -116,6 +118,11 @@ namespace Ui
         private void OnDronePathToggleChange(bool value)
         {
             OnDronePathToggleChanged?.Invoke(value);
+        }
+        
+        private void OnExitButtonClick()
+        {
+            Application.Quit();
         }
     }
 }
