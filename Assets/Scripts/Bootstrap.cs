@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Core;
 using Core.Interfaces;
-using Db;
 using Db.Camera;
 using Db.Drone;
 using Db.Resource;
@@ -27,7 +26,6 @@ public class Bootstrap : MonoBehaviour
 
         private IModulesHandler _modulesHandler;
         private ISpawnResourcesModule _spawnResourcesModule;
-        private CameraMoveModule _cameraMoveModule;
         private IInputService _inputService;
         private IResourceStorageService _resourceStorageService;
         
@@ -44,8 +42,6 @@ public class Bootstrap : MonoBehaviour
                 
                 _uiController.Initialize(_resourceStorageService, _droneData, _resourceData);
                 
-                SetupCameraFollowing();
-                
                 _modulesHandler.Awake();
         }
         
@@ -53,8 +49,7 @@ public class Bootstrap : MonoBehaviour
         {
                 var modulesList = new List<IModule>();
                 
-                var cameraMove = new CameraMoveModule(_gameFieldProvider.GameField.Camera, _inputService, _cameraData);
-                _cameraMoveModule = cameraMove;
+                var cameraMove = new CameraMoveModule(_gameFieldProvider.GameField.Camera, _inputService, _cameraData, _minimapController);
                 modulesList.Add(cameraMove);
                 
                 var spawnResourceModule = new SpawnResourcesModule(
@@ -81,19 +76,6 @@ public class Bootstrap : MonoBehaviour
                 modulesList.Add(droneModule);
 
                 _modulesHandler = new ModulesHandler(modulesList);
-        }
-        
-        private void SetupCameraFollowing()
-        {
-                _minimapController.OnUnitSelected += OnUnitSelected;
-        }
-
-        private void OnUnitSelected(Transform unit)
-        {
-                if (unit != null)
-                {
-                        _cameraMoveModule.StartFollowing(unit);
-                }
         }
 
         private void Start()

@@ -1,15 +1,17 @@
-﻿using Core.Interfaces;
+﻿using System;
+using Core.Interfaces;
 using Db.Camera;
 using Services.Input;
 using UnityEngine;
 
 namespace Modules.Camera
 {
-    public class CameraMoveModule : IUpdatable
+    public class CameraMoveModule : IUpdatable, IDisposable
     {
         private readonly UnityEngine.Camera _camera;
         private readonly IInputService _inputService;
         private readonly CameraData _cameraData;
+        private readonly MinimapController _minimapController;
         
         private Transform _targetToFollow;
         private Vector3 _basePosition;
@@ -19,16 +21,41 @@ namespace Modules.Camera
         public CameraMoveModule(
             UnityEngine.Camera camera, 
             IInputService inputService, 
-            CameraData cameraData
+            CameraData cameraData,
+            MinimapController minimapController
         )
         {
             _camera = camera;
             _inputService = inputService;
             _cameraData = cameraData;
+            _minimapController = minimapController;
             _basePosition = camera.transform.position;
             _baseRotation = camera.transform.rotation;
             
             _inputService.OnCancelPressed += StopFollowing;
+            _minimapController.OnUnitSelected += OnUnitSelected;
+        }
+        
+        private void StopFollowing()
+        {
+            if (!_isFollowing)
+                return;
+                
+            _isFollowing = false;
+            _targetToFollow = null;
+            
+            var currentPos = _camera.transform.position;
+            var returnPosition = new Vector3(currentPos.x, _basePosition.y, currentPos.z);
+            _camera.transform.position = returnPosition;
+            _camera.transform.rotation = _baseRotation;
+        }
+        
+        private void OnUnitSelected(Transform unit)
+        {
+            if (unit != null)
+            {
+                StartFollowing(unit);
+            }
         }
 
         public void Update()
@@ -49,27 +76,13 @@ namespace Modules.Camera
             _basePosition = position;
             _baseRotation = _camera.transform.rotation;
         }
-        
-        public void StartFollowing(Transform target)
+
+        private void StartFollowing(Transform target)
         {
             _basePosition = _camera.transform.position;
             _baseRotation = _camera.transform.rotation;
             _targetToFollow = target;
             _isFollowing = true;
-        }
-        
-        private void StopFollowing()
-        {
-            if (!_isFollowing)
-                return;
-                
-            _isFollowing = false;
-            _targetToFollow = null;
-            
-            var currentPos = _camera.transform.position;
-            var returnPosition = new Vector3(currentPos.x, _basePosition.y, currentPos.z);
-            _camera.transform.position = returnPosition;
-            _camera.transform.rotation = _baseRotation;
         }
         
         private void FollowTarget()
@@ -92,6 +105,12 @@ namespace Modules.Camera
             var directionToDrone = (dronePosition - _camera.transform.position).normalized;
             var targetRotation = Quaternion.LookRotation(directionToDrone);
             _camera.transform.rotation = Quaternion.Lerp(_camera.transform.rotation, targetRotation, Time.deltaTime * followSpeed);
+        }
+
+        public void Dispose()
+        {
+            _inputService.OnCancelPressed -= StopFollowing;
+            _minimapController.OnUnitSelected -= OnUnitSelected;
         }
     }
 }
